@@ -4,6 +4,7 @@ from vllm.kalypso.sem_ops import OpBehavior, OpName, ops
 from vllm.kalypso.query import Query
 from vllm.kalypso.data import data
 from vllm.kalypso.budget import KVMemoryManager
+from vllm.kalypso.execution.determinism import check_determinism
 from vllm.kalypso.execution.pipeline_execution import PlanExecutor
 from vllm.kalypso.controller.map_estimator import MapRatioEstimator
 from .stage import Stage, Task, stage_builder
@@ -534,9 +535,10 @@ class SemanticPlan:
             for kv in self.pool.managers():
                 kv.reset_stages()
 
+        physical_ops = self.parse_ops(query.ops)
+        check_determinism(query.ops, physical_ops)
         ctxs = list(data._data_source(raw_request, query.data_path, self.executor))
         MapRatioEstimator.instance()
-        physical_ops = self.parse_ops(query.ops)
         plan = self.build(ctxs, physical_ops)
         self.print_plan(plan)
 

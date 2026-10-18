@@ -20,10 +20,12 @@ from vllm.kalypso.context import (
 )
 from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.controller.map_estimator import MapRatioEstimator
+from vllm.kalypso.execution.determinism import Text
 from vllm.kalypso.execution.pipeline_execution import BlockingExecutor
 
 
 class SemMap(BaseOp):
+    determinism = Text()
     MAX_TOKEN_LIMIT = 8192
     LOG = False
     LOG_RETRY_TRACE = True
@@ -103,6 +105,7 @@ class SemMap(BaseOp):
                 max_tokens=max_tokens,
                 pin=False,
                 priority=priority,
+                determinism=self.determinism,
             )
         
             if output.finish_reason == "length" and max_tokens < SemMap.MAX_TOKEN_LIMIT:
