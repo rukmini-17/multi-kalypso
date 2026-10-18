@@ -557,6 +557,47 @@ async def semantic_workers(raw_request: Request):
     }                                                                 
 
 
+@router.get("/v1/semantic/kv_budget")
+async def semantic_kv_budget(raw_request: Request):
+    """Worker discovery for the Kalypso coordinator: model and total KV budget."""
+    engine = raw_request.app.state.engine_client
+    per_gpu = await engine.engine_core.call_utility_async("get_kv_cache_budget")
+    tp = engine.vllm_config.parallel_config.tensor_parallel_size
+    return {
+        "model": engine.vllm_config.model_config.model,
+        "per_gpu_budget_bytes": per_gpu,
+        "tensor_parallel_size": tp,
+        "budget_bytes": per_gpu * tp,
+    }
+
+
+@router.post("/v1/semantic/kv/unpin")
+async def semantic_kv_unpin(payload: UnpinPinnedRequestsRequest, raw_request: Request):
+    """Unpin the given request ids. Unlike /v1/semantic/pinned/unpin this does
+    not consult the local PinnedRequestRegistry, because with a remote
+    coordinator the pin bookkeeping lives on the coordinator."""
+    request_ids = payload.request_ids or []
+    if request_ids:
+        try:
+            await asyncio.wait_for(
+                raw_request.app.state.engine_client.engine_core.call_utility_async(
+                    "unpin_requests", request_ids
+                ),
+                timeout=5.0,
+            )
+        except asyncio.TimeoutError:
+            return JSONResponse(status_code=504, content={"error": "engine_unresponsive"})
+    return {"unpinned_count": len(request_ids)}
+
+
+@router.post("/v1/semantic/kv/abort")
+async def semantic_kv_abort(payload: dict, raw_request: Request):
+    request_id = payload.get("request_id")
+    if request_id:
+        await raw_request.app.state.engine_client.abort(request_id)
+    return {"aborted": request_id}
+
+
 @router.get("/v1/semantic/pinned")
 async def get_pinned_requests(raw_request: Request):
     pinned_requests = PinnedRequestRegistry.instance().list()
