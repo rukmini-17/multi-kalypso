@@ -16,6 +16,7 @@ import asyncio
 import json
 import time
 
+from vllm.kalypso.execution.determinism import Determinism, apply_determinism
 from vllm.kalypso.execution.executor import LLMExecutor, CompletionResult
 from vllm.kalypso.instrumentation import RequestRecorder, current_request_meta
 from vllm.kalypso.pin_registry import PinnedRequestRegistry
@@ -165,10 +166,19 @@ class HttpVLLMExecutor(LLMExecutor):
 
     # -- LLMExecutor interface ------------------------------------------------
     async def execute(
-        self, raw_request, prompt, max_tokens: int, pin: bool = False, priority: int = 0
+        self,
+        raw_request,
+        prompt,
+        max_tokens: int,
+        pin: bool = False,
+        priority: int = 0,
+        determinism: Determinism | None = None,
     ) -> CompletionResult:
         kind = "completion" if type(prompt) is str else "chat"
-        return await self._call(kind, raw_request, prompt, max_tokens, pin, priority)
+        result = await self._call(kind, raw_request, prompt, max_tokens, pin, priority)
+        if pin:
+            return result
+        return apply_determinism(prompt, result, determinism)
 
     async def complete(
         self, *, raw_request, prompt, max_tokens: int, pin: bool = False, priority: int = 0
