@@ -75,6 +75,10 @@ class VLLMExecutor(LLMExecutor):
             pin=pin,
             priority=priority,
         )
+        if pin:
+            # Pin calls only cache the row data; callers keep the request_id
+            # and discard the reply, so there is nothing to make deterministic.
+            return result
         return apply_determinism(prompt, result, determinism)
 
 

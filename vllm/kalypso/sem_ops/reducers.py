@@ -20,10 +20,12 @@ from vllm.kalypso.context import (
 )
 from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.controller.map_estimator import MapRatioEstimator
+from vllm.kalypso.execution.determinism import Bucket
 from vllm.kalypso.execution.pipeline_execution import BlockingExecutor
 
 
 class SemAgg(BaseOp):
+    determinism = Bucket(num_buckets=10)
     def __init__(self, instruction: str, max_tokens: int = 8192, concurrency: int = 8, position=-1):
         super().__init__(behavior=OpBehavior.BLOCKING, position=position)
         self.instruction = instruction
@@ -142,6 +144,7 @@ class SemAgg(BaseOp):
             prompt=prompt,
             max_tokens=self.max_tokens,
             pin=False,
+            determinism=self.determinism,
         )
 
         ctx = SemContext(

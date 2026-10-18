@@ -85,3 +85,24 @@ def apply_determinism(
     )
     digest = hashlib.sha256(f"{seed}|{canonical_prompt}".encode()).digest()
     return CompletionResult(determinism.reply(digest), result.request_id, "stop")
+
+
+class DeterminismUnsupportedError(ValueError):
+    pass
+
+
+def check_determinism(logical_ops, physical_ops) -> None:
+    """Fail before execution if determinism is on and an operator lacks support."""
+    if determinism_seed() is None:
+        return
+    unsupported = [
+        f"{logical_ops[op.position]['op']} at position {op.position} "
+        f"({op.__class__.__name__})"
+        for op in physical_ops
+        if op.CALLS_LLM and op.determinism is None
+    ]
+    if unsupported:
+        raise DeterminismUnsupportedError(
+            "Determinism is on (KALYPSO_COIN_FLIP_SEED is set), but these "
+            "operators do not support it: " + "; ".join(unsupported)
+        )

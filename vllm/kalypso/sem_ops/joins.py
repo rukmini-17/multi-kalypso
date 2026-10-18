@@ -24,6 +24,8 @@ from vllm.kalypso.execution.pipeline_execution import BlockingExecutor
 
 
 class CartesianProduct(BaseOp):
+    CALLS_LLM = False
+
     def __init__(self, right_table, position=-1):
         super().__init__(behavior=OpBehavior.JOIN, position=position)
         self.right_table = right_table
@@ -50,6 +52,8 @@ class CartesianProduct(BaseOp):
 
 
 class IndexedCartesianProduct(BaseOp):
+    CALLS_LLM = False
+
     def __init__(
         self,
         right_table=None,
@@ -166,6 +170,8 @@ class IndexedCartesianProduct(BaseOp):
 
 
 class IndexedSearch(BaseOp):
+    CALLS_LLM = False
+
     def __init__(
         self,
         right_table=None,

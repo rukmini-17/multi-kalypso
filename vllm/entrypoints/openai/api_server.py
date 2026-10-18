@@ -636,11 +636,16 @@ async def semantic_query(
     print('query called')
 
     processor = raw_request.app.state.query_processor
-    out_ctxs = await processor.execute(
-        raw_request,
-        _query,
-        blocking=sem_request.blocking,
-    )
+    try:
+        out_ctxs = await processor.execute(
+            raw_request,
+            _query,
+            blocking=sem_request.blocking,
+        )
+    except ValueError as e:
+        # Invalid queries (unknown ops, bad args, unsupported determinism)
+        # are the client's fault.
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
     results = []
     for ctx in out_ctxs:

@@ -1,6 +1,8 @@
 from enum import Enum, auto
 from dataclasses import dataclass, field
 
+from vllm.kalypso.execution.determinism import Determinism
+
 
 class OpName:
     SEM_FILTER = "sem_filter"
@@ -34,6 +36,12 @@ class OpBehavior(Enum):
 
 
 class BaseOp:
+    # Operators that make no LLM call are deterministic already.
+    CALLS_LLM = True
+    # How LLM replies are replaced when determinism is on; None means the
+    # operator does not support determinism.
+    determinism: Determinism | None = None
+
     def __init__(self, behavior, position, predicate=False):
         self.behavior = behavior
         self.position = position
