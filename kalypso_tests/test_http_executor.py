@@ -132,7 +132,7 @@ def test_completion_and_chat_roundtrip_with_records():
         rec = instr.RequestRecorder()
         ex = http.HttpVLLMExecutor(fw.url, "m", name="w1", recorder=rec)
         try:
-            with instr.request_meta(stage=2, operator="SemFilter", row_idx=5):
+            with instr.request_meta(stage=2, operator="SemFilter", position=3, row_idx=5):
                 r1 = await ex.execute(raw_request=NS(), prompt="is it true?", max_tokens=8)
             r2 = await ex.execute(
                 raw_request=NS(),
@@ -151,6 +151,7 @@ def test_completion_and_chat_roundtrip_with_records():
         assert len(rows) == 2
         a, b = rows
         assert (a["worker"], a["operator"], a["stage"], a["row_idx"]) == ("w1", "SemFilter", 2, 5)
+        assert a["position"] == 3 and b["position"] is None
         assert (a["prompt_tokens"], a["completion_tokens"], a["status"]) == (7, 2, "ok")
         assert a["kind"] == "completion" and b["kind"] == "chat"
         assert b["operator"] is None  # no metadata set for the second call

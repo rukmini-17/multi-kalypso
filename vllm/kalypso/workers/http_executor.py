@@ -150,6 +150,7 @@ class HttpVLLMExecutor(LLMExecutor):
                     worker=self.name,
                     operator=meta.get("operator"),
                     stage=meta.get("stage"),
+                    position=meta.get("position"),
                     row_idx=meta.get("row_idx"),
                     kind=kind,
                     pin=pin,

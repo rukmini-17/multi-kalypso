@@ -7,7 +7,7 @@ recorder was created, from time.monotonic):
   {"type": "queue_sample", ...}  one per worker per poll (written by the poller)
 
 Request row fields:
-  request_id, worker, operator, stage, row_idx, kind ("completion"|"chat"),
+  request_id, worker, operator, stage, position, row_idx, kind ("completion"|"chat"),
   pin, priority, submit_t, start_t, finish_t, prompt_tokens,
   completion_tokens, finish_reason, status ("ok"|"error"|"cancelled"), error
 

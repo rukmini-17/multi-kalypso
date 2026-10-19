@@ -185,6 +185,7 @@ class Stage:
                 with request_meta(
                     stage=self.stage_id,
                     operator=type(op).__name__,
+                    position=op.position,
                     row_idx=task.ctx.state.idx,
                 ):
                     keep_going = await op(

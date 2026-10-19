@@ -3,6 +3,7 @@
 """Compare semantic query outputs against a single-worker baseline.
 
 Check output uniqueness, row mapping, and operator value agreement by row index.
+Always check coordinator request records for call uniqueness.
 KALYPSO_COIN_FLIP_SEED must match on all servers; real inference still runs.
 The run command writes records to a CSV beside the response for team main's
 server-visible data_path API, so client and server must share a filesystem.
@@ -12,6 +13,7 @@ import argparse
 import csv
 import json
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -35,7 +37,12 @@ def values(response: dict) -> dict:
     return {r["idx"]: [o["value"] for o in r["outputs"]] for r in response["results"]}
 
 
-def check(payload: dict, baseline: dict, candidate: dict) -> bool:
+def check(
+    payload: dict,
+    baseline: dict,
+    candidate: dict,
+    request_rows: list[dict],
+) -> bool:
     records = payload["records"]
     rows = candidate["results"]
     indices = [r["idx"] for r in rows]
@@ -53,8 +60,26 @@ def check(payload: dict, baseline: dict, candidate: dict) -> bool:
         if i not in before or i not in after or before[i] != after[i]
     )
     checks[f"agreement (differing idx: {differing})"] = not differing
+    calls = [r for r in request_rows if not r["pin"] and r["row_idx"] is not None]
+    valid_calls = all(
+        type(r["row_idx"]) is int and 0 <= r["row_idx"] < len(records)
+        for r in calls
+    )
+    checks["exactly once (calls)"] = (
+        valid_calls
+        and all(r["status"] == "ok" for r in calls)
+        and all(
+            count == 1
+            for count in Counter(
+                (r["row_idx"], r["stage"], r["position"], r["operator"])
+                for r in calls
+            ).values()
+        )
+        and {r["row_idx"] for r in calls} == set(range(len(records)))
+    )
     for name, passed in checks.items():
         print(f"{'PASS' if passed else 'FAIL'} {name}")
+    print(f"Per-worker calls: {dict(Counter(r['worker'] for r in request_rows))}")
     return all(checks.values())
 
 
@@ -82,8 +107,13 @@ def main() -> int:
         sub.add_argument("--payload", required=True)
         required = {
             "run": ["endpoint", "out"],
-            "check": ["baseline", "candidate"],
-            "compare": ["baseline-endpoint", "candidate-endpoint", "out-dir"],
+            "check": ["baseline", "candidate", "records"],
+            "compare": [
+                "baseline-endpoint",
+                "candidate-endpoint",
+                "out-dir",
+                "records",
+            ],
         }[name]
         for option in required:
             sub.add_argument(f"--{option}", required=True)
@@ -104,7 +134,13 @@ def main() -> int:
             )
         else:
             baseline, candidate = read(args.baseline), read(args.candidate)
-        return int(not check(payload, baseline, candidate))
+        with Path(args.records).open() as stream:
+            request_rows = [
+                row
+                for line in stream
+                if (row := json.loads(line))["type"] == "request"
+            ]
+        return int(not check(payload, baseline, candidate, request_rows))
     except (OSError, ValueError, KeyError, TypeError, requests.RequestException) as exc:
         print(f"FAIL {exc}")
         return 1
