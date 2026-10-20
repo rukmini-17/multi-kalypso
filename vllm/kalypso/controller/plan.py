@@ -16,12 +16,21 @@ class SemanticPlan:
         executor,
         virtual_pinning: bool = True,
         blocking: bool = False,
+        pool=None,
+        policy=None,
     ):
         self.executor = executor
-        self.plan_executor = PlanExecutor()
+        self.pool = pool
+        self.policy = policy
+        self.plan_executor = PlanExecutor(pool=pool, policy=policy)
         self.virtual_pinning = virtual_pinning
         self.blocking = blocking
 
+    def _managers(self):
+        """Every manager that needs stages registered: one per worker, or the singleton."""
+        if self.pool is not None:
+            return self.pool.managers()
+        return [KVMemoryManager.get_instance()]
 
     def build(self, ctxs, operators):
 
@@ -69,7 +78,6 @@ class SemanticPlan:
                 if hasattr(item, "stage_id")
             ]
 
-            kv = KVMemoryManager.get_instance()
             num_stages = len(stage_ids)
             stage_min_caps = {}
             estimated_ctxs = list(ctxs)
@@ -111,65 +119,69 @@ class SemanticPlan:
                         estimated_ctxs,
                     )
 
-            if num_stages == 1:
-                kv.register_stage(
-                    stage_ids[0],
-                    1.0,
-                    min_fraction=1.0,
-                    max_fraction=1.0,
-                )
-            
-            
-            # This is for ablation
-            # elif num_stages == 3:
-            #     # Stage 1 / 2 / 3 fractions; keep exactly one line uncommented.
-            #     fixed_fractions = (0.1, 0.3, 0.6)    # most memory to the last stage
-            #     # fixed_fractions = (0.1, 0.45, 0.45)  # stages 2 and 3 balanced
-            #     # fixed_fractions = (0.1, 0.6, 0.3)    # middle stage favored
-            #     # fixed_fractions = (0.2, 0.4, 0.4)    # more for stage 1
-            #     # fixed_fractions = (0.33, 0.33, 0.34) # uniform split
-            #     for sid, fraction in zip(stage_ids, fixed_fractions):
-            #         kv.register_stage(
-            #             sid,
-            #             fraction,
-            #             min_fraction=fraction,
-            #             max_fraction=fraction,
-            #         )
-            # elif num_stages == 2:
-            #     fixed_fractions = (0.9, 0.1)
-            #     for sid, fraction in zip(stage_ids, fixed_fractions):
-            #         kv.register_stage(
-            #             sid,
-            #             fraction,
-            #             min_fraction=fraction,
-            #             max_fraction=fraction,
-            #         )
-            elif num_stages > 1:
-                total_capacity = kv.capacity()
-                assigned_caps = {
-                    sid: stage_min_caps.get(sid, 0)
-                    for sid in stage_ids[:-1]
-                }
-                assigned_caps[stage_ids[-1]] = total_capacity - sum(
-                    assigned_caps.values()
-                )
-                
-
-                for idx, sid in enumerate(stage_ids):
-                    assigned_cap = max(kv.bytes_per_token, assigned_caps[sid])
-                    protected_min_cap = stage_min_caps.get(sid, 0)
-                    initial_fraction = min(1.0, assigned_cap / total_capacity)
-                    if idx == num_stages - 1:
-                        max_fraction = 1.0
-                    else:
-                        max_fraction = min(1.0, initial_fraction + 0.5)
+            def register_on(kv):
+                # Register this segment's stages on one worker's KVMemoryManager.
+                # Fractions are computed from that manager's own capacity.
+                if num_stages == 1:
                     kv.register_stage(
-                        sid,
-                        initial_fraction,
-                        min_fraction=0.0,
-                        max_fraction=max_fraction,
-                        min_capacity_bytes=protected_min_cap,
+                        stage_ids[0],
+                        1.0,
+                        min_fraction=1.0,
+                        max_fraction=1.0,
                     )
+
+                # This is for ablation
+                # elif num_stages == 3:
+                #     # Stage 1 / 2 / 3 fractions; keep exactly one line uncommented.
+                #     fixed_fractions = (0.1, 0.3, 0.6)    # most memory to the last stage
+                #     # fixed_fractions = (0.1, 0.45, 0.45)  # stages 2 and 3 balanced
+                #     # fixed_fractions = (0.1, 0.6, 0.3)    # middle stage favored
+                #     # fixed_fractions = (0.2, 0.4, 0.4)    # more for stage 1
+                #     # fixed_fractions = (0.33, 0.33, 0.34) # uniform split
+                #     for sid, fraction in zip(stage_ids, fixed_fractions):
+                #         kv.register_stage(
+                #             sid,
+                #             fraction,
+                #             min_fraction=fraction,
+                #             max_fraction=fraction,
+                #         )
+                # elif num_stages == 2:
+                #     fixed_fractions = (0.9, 0.1)
+                #     for sid, fraction in zip(stage_ids, fixed_fractions):
+                #         kv.register_stage(
+                #             sid,
+                #             fraction,
+                #             min_fraction=fraction,
+                #             max_fraction=fraction,
+                #         )
+                elif num_stages > 1:
+                    total_capacity = kv.capacity()
+                    assigned_caps = {
+                        sid: stage_min_caps.get(sid, 0)
+                        for sid in stage_ids[:-1]
+                    }
+                    assigned_caps[stage_ids[-1]] = total_capacity - sum(
+                        assigned_caps.values()
+                    )
+
+                    for idx, sid in enumerate(stage_ids):
+                        assigned_cap = max(kv.bytes_per_token, assigned_caps[sid])
+                        protected_min_cap = stage_min_caps.get(sid, 0)
+                        initial_fraction = min(1.0, assigned_cap / total_capacity)
+                        if idx == num_stages - 1:
+                            max_fraction = 1.0
+                        else:
+                            max_fraction = min(1.0, initial_fraction + 0.5)
+                        kv.register_stage(
+                            sid,
+                            initial_fraction,
+                            min_fraction=0.0,
+                            max_fraction=max_fraction,
+                            min_capacity_bytes=protected_min_cap,
+                        )
+
+            for kv in self._managers():
+                register_on(kv)
 
             plan.append(current_segment)
             current_segment = []
@@ -517,7 +529,11 @@ class SemanticPlan:
         
 
     async def execute(self, raw_request, query: Query):
-        
+        # Clear stale stages on every worker's manager before this query registers its own.
+        if self.pool is not None:
+            for kv in self.pool.managers():
+                kv.reset_stages()
+
         ctxs = list(data._data_source(raw_request, query.data_path, self.executor))
         MapRatioEstimator.instance()
         physical_ops = self.parse_ops(query.ops)
@@ -535,4 +551,4 @@ class SemanticPlan:
         if cascade_stats["called"] > 0:
             print(f"[query] CascadeOperator stats={cascade_stats}")
         print(f'len(out){len(out)}')
-        return out 
+        return out

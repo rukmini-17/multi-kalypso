@@ -278,6 +278,10 @@ class KVMemoryManager:
             
     def stage_inflight(self, stage_id: int) -> int:
         return self._stage_inflight.get(stage_id, 0)
+    
+    def total_inflight(self) -> int:
+        """Admitted, unfinished tasks across all stages on this manager."""
+        return sum(self._stage_inflight.values())
 
     def stage_usage(self, stage_id: int) -> tuple[int, int]:
         return (

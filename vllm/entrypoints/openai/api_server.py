@@ -539,6 +539,23 @@ async def semantic_healthz(raw_request: Request):
         "query_processor_initialized": hasattr(raw_request.app.state, "query_processor"),
     }
 
+@router.get("/v1/semantic/workers")                                   
+async def semantic_workers(raw_request: Request):
+    pool = getattr(raw_request.app.state.query_processor, "pool", None)
+    if pool is None:
+        return {"pool": None}
+    return {
+        "workers": [
+            {
+                "name": w.name,
+                "inflight": pool.manager(w).total_inflight(),
+                "stage_used": {str(k): v for k, v in pool.manager(w)._stage_used.items()},
+                "capacity": pool.manager(w).capacity(),
+            }
+            for w in pool.workers
+        ]
+    }                                                                 
+
 
 @router.get("/v1/semantic/pinned")
 async def get_pinned_requests(raw_request: Request):
@@ -655,6 +672,7 @@ async def semantic_query(
         results.append(
             {
                 "idx": getattr(ctx.state, "idx", None),
+                "worker": getattr(getattr(ctx.state, "worker", None), "name", None),   
                 "input_context": getattr(ctx.input, "data", None),
                 "right_input_context": getattr(ctx.input, "right_data", None),
                 "outputs": outputs,
@@ -1510,6 +1528,28 @@ async def init_app_state(
 
     # Query processor currently doesn't reflect other requests' budget usage
     state.query_processor = query_processor.QueryProcessor(model_name=model_name, budget=budget)
+    
+    # Dev-only: simulate N logical workers on this one engine (each gets its own
+    # KV budget). Off unless KALYPSO_SIM_WORKERS is set.
+    n_sim = int(os.environ.get("KALYPSO_SIM_WORKERS", "0"))
+    if n_sim > 0:
+        import torch
+        from vllm.kalypso.budget import KVMemoryManager
+        from vllm.kalypso.workers.policy import make_policy
+        from vllm.kalypso.workers.stub_pool import StubPool
+
+        qp = state.query_processor
+        qp.pool = StubPool.simulated(
+            n_sim,
+            qp.executor,
+            lambda: KVMemoryManager(model_name, budget // n_sim, torch.float16),
+        )
+        qp.policy = make_policy(os.environ.get("KALYPSO_POLICY", "round_robin"))
+        logger.info(
+            "Kalypso simulated workers: n=%d policy=%s per-worker budget=%.2f GiB",
+            n_sim, qp.policy.name, (budget // n_sim) / gib,
+        )
+
     state.query_processor.start_stuck_monitor(state.engine_client)
     
 

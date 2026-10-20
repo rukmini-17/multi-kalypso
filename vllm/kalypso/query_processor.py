@@ -47,6 +47,9 @@ class QueryProcessor:
         budget,
         virtual_pinning: bool = True,
         blocking: bool = False,
+        pool=None,
+        policy=None,
+
     ):
         self.model_name = model_name
         self.virtual_pinning = virtual_pinning
@@ -57,6 +60,8 @@ class QueryProcessor:
         self._last_unpin_at = 0.0
         self._consecutive_stuck_checks = 0
         self._consecutive_timeout_checks = 0
+        self.pool = pool
+        self.policy = policy
 
     @classmethod
     def _kv_metric_snapshot(cls) -> dict[str, float]:
@@ -174,6 +179,9 @@ class QueryProcessor:
             self.executor,
             virtual_pinning=self.virtual_pinning,
             blocking=effective_blocking,
+            pool=self.pool,
+            policy=self.policy,
+
         )
         owner_key = str(id(raw_request))
         query_id = f"query-{uuid4().hex}"

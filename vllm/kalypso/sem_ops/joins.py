@@ -42,7 +42,9 @@ class CartesianProduct(BaseOp):
                 state=ExecutionState(
                     raw_request=ctx.state.raw_request,
                     pin_req_id=None,
-                    executor=ctx.state.executor
+                    executor=ctx.state.executor,
+                    worker=ctx.state.worker,
+
                 ),
                 )
             out.append(new_ctx)
@@ -158,6 +160,8 @@ class IndexedCartesianProduct(BaseOp):
                     executor=ctx.state.executor,
                     helper_score=score,
                     idx=ctx.state.idx,
+                    worker=ctx.state.worker,
+
                 ),
             )
             out.append(new_ctx)
