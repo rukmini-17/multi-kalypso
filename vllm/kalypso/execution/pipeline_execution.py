@@ -6,12 +6,13 @@ from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.context import RetryTaskResult
 from vllm.kalypso.controller.stage import Task
 from vllm.kalypso.sem_ops import OpBehavior, ops
+from vllm.kalypso.workers.policy import admit, RoundRobinPolicy
 
 
 class PlanExecutor:
 
-    def __init__(self):
-        self.pipeline_executor = AsyncPipelineExecutor()
+    def __init__(self, pool=None, policy=None):
+        self.pipeline_executor = AsyncPipelineExecutor(pool=pool, policy=policy)
         self.blocking_executor = BlockingExecutor()
 
     async def execute(self, ctxs, plan):
@@ -147,8 +148,20 @@ class AsyncPipelineExecutor:
     # vLLM perform its own queueing, preemption, and KV-cache management.
     MEMORY_ADMISSION_CONTROL = True
 
-    def __init__(self):
+    def __init__(self, pool=None, policy=None):
         self.manager = KVMemoryManager.get_instance()
+        self.pool = pool
+        self.policy = policy if policy is not None else (
+            RoundRobinPolicy() if pool is not None else None
+        )
+
+    def _mgr(self, task):
+        """The manager holding this task's budget: its worker's, else the singleton."""
+        if self.pool is not None:
+            w = task.ctx.state.worker
+            if w is not None:
+                return self.pool.manager(w)
+        return self.manager
 
     async def execute_tasks(self, ctxs, stages):
         """
@@ -204,23 +217,31 @@ class AsyncPipelineExecutor:
             if now - last_scheduler_log_at < self.LOG_SCHEDULER_INTERVAL_SEC:
                 return
             last_scheduler_log_at = now
-            # Small table per event, e.g.
-            # [sched] 08:03:11 finish task=12 stage=2
-            # stage   used/cap GB  wait   run
-            #     1   25.7/25.8     325     3  FULL
-            # FULL = has waiting tasks and memory >= 90% used.
+            # One row per stage per worker, e.g.
+            # [sched] 08:03:11 finish task=12 stage=1
+            # stage  worker   used/cap GB inflt  wait
+            #     1      w0     2.1/4.4       3    10
+            #     1      w1     1.8/4.4       2    10
+            # FULL = stage has waiting tasks and this worker's memory >= 90% used.
+            # `wait` is the stage's shared queue, so it repeats on each worker row.
+            mgrs = (
+                [(w.name, self.pool.manager(w)) for w in self.pool.workers]
+                if self.pool is not None
+                else [("-", self.manager)]
+            )
             lines = [
                 f"[sched] {time.strftime('%H:%M:%S')} {event}",
-                f"{'stage':>5} {'used/cap GB':>13} {'wait':>5} {'run':>5}",
+                f"{'stage':>5} {'worker':>7} {'used/cap GB':>13} {'inflt':>5} {'wait':>5}",
             ]
             for stage in stages:
-                used, cap = self.manager.stage_usage(stage.stage_id)
-                wait, run = len(stage.waiting_tasks), len(stage.running_tasks)
-                full = "  FULL" if cap > 0 and used >= 0.9 * cap and wait > 0 else ""
-                lines.append(
-                    f"{stage.stage_id:>5}   {used / 1e9:5.1f}/{cap / 1e9:<5.1f} "
-                    f"{wait:>5} {run:>5}{full}"
-                )
+                wait = len(stage.waiting_tasks)
+                for name, m in mgrs:
+                    used, cap = m.stage_usage(stage.stage_id)
+                    full = "  FULL" if cap > 0 and used >= 0.9 * cap and wait > 0 else ""
+                    lines.append(
+                        f"{stage.stage_id:>5} {name:>7} {used / 1e9:5.1f}/{cap / 1e9:<5.1f} "
+                        f"{m.stage_inflight(stage.stage_id):>5} {wait:>5}{full}"
+                    )
             print("\n".join(lines))
 
         async def finalize_task(task: Task):
@@ -234,7 +255,7 @@ class AsyncPipelineExecutor:
                 future.cancel()
             await asyncio.gather(*active, return_exceptions=True)
             for future, (stage, task) in list(active.items()):
-                await stage.release_budget(stage.detach_budget(task), self.manager)
+                await stage.release_budget(stage.detach_budget(task), self._mgr(task))
             active.clear()
 
         def record_input(stage_id: int):
@@ -253,6 +274,10 @@ class AsyncPipelineExecutor:
 
         async def rebalance_stage_capacity():
             if not self.MEMORY_ADMISSION_CONTROL:
+                return
+            if self.pool is not None:
+                # Not yet per worker: budgets stay at their registered split.
+                # Single-stage queries (filter + map) are unaffected.
                 return
 
             changed = False
@@ -304,8 +329,13 @@ class AsyncPipelineExecutor:
 
         def blocked_stage_details():
             details = {}
+            mgrs = self.pool.managers() if self.pool is not None else [self.manager]
             for stage in stages:
-                used, cap = self.manager.stage_usage(stage.stage_id)
+                # Summed over workers; `admissible` is approximate in pool mode.
+                used = cap = 0
+                for m in mgrs:
+                    u, c = m.stage_usage(stage.stage_id)
+                    used, cap = used + u, cap + c
                 head_task = stage.peek_task()
                 head_budget = None
                 head_task_id = None
@@ -336,7 +366,11 @@ class AsyncPipelineExecutor:
 
                     # refresh_retry_max_tokens(stage, task)
                     if self.MEMORY_ADMISSION_CONTROL:
-                        if await stage.accept(task, self.manager) is None:
+                        if self.pool is not None:
+                            admitted = await admit(stage, task, self.pool, self.policy)
+                        else:
+                            admitted = await stage.accept(task, self.manager)
+                        if admitted is None:
                             break
                     else:
                         stage.accept_unconditionally(task)
@@ -363,7 +397,14 @@ class AsyncPipelineExecutor:
                 record_input(stage.stage_id)
                 stage.pop_task()
                 # refresh_retry_max_tokens(stage, task)
-                await stage.force_accept(task, self.manager)
+                st = task.ctx.state
+                if self.pool is not None and st.worker is None:
+                    # Nothing fits anywhere: take the policy's first choice and
+                    # charge that worker, so the budget is released on it later.
+                    w = self.policy.rank(self.pool, task)[0]
+                    st.worker, st.executor = w, w.executor
+                    self.policy.on_assigned(w, self.pool)
+                await stage.force_accept(task, self._mgr(task))
                 log_running_tasks(
                     f"force-start task={task.task_id} stage={stage.stage_id}"
                 )
@@ -403,10 +444,11 @@ class AsyncPipelineExecutor:
             for future in done:
                 stage, task = active.pop(future)
                 budget = stage.detach_budget(task)
+                mgr = self._mgr(task)
                 try:
                     result = future.result()
                 except Exception:
-                    await stage.release_budget(budget, self.manager)
+                    await stage.release_budget(budget, mgr)
                     log_running_tasks(
                         f"finish task={task.task_id} stage={stage.stage_id}"
                     )
@@ -436,7 +478,7 @@ class AsyncPipelineExecutor:
                     stages[task.stage_index].enqueue(retry_task)
                     record_retry(stage.stage_id)
                     if not result.retain_budget:
-                        await stage.release_budget(budget, self.manager)
+                        await stage.release_budget(budget, mgr)
                     log_running_tasks(
                         f"retry task={task.task_id} stage={stage.stage_id} "
                         f"retain_budget={result.retain_budget}"
@@ -445,7 +487,7 @@ class AsyncPipelineExecutor:
                     continue
 
                 if result is None:
-                    await stage.release_budget(budget, self.manager)
+                    await stage.release_budget(budget, mgr)
                     log_running_tasks(
                         f"finish task={task.task_id} stage={stage.stage_id}"
                     )
@@ -465,7 +507,7 @@ class AsyncPipelineExecutor:
                                 task.ctx.state.pin_req_id,
                             )
                             task.ctx.state.pin_req_id = None
-                        await stage.release_budget(budget, self.manager)
+                        await stage.release_budget(budget, mgr)
                         log_running_tasks(
                             f"finish task={task.task_id} stage={stage.stage_id}"
                         )
@@ -497,7 +539,7 @@ class AsyncPipelineExecutor:
                             JoinTracker(
                                 task.ctx,
                                 len(child_ctxs),
-                                manager=self.manager,
+                                manager=mgr,
                                 stage_id=stage.stage_id,
                                 reserved_budget=budget,
                                 on_release=release_deferred_parent,
@@ -508,13 +550,13 @@ class AsyncPipelineExecutor:
                         # Virtual pinning: children share the parent's prefix in the
                         # prefix cache; reserve it once until the last descendant ends.
                         shared_budget = min(budget, shared_tokens * self.manager.bytes_per_token)
-                        await stage.release_budget(budget - shared_budget, self.manager)
+                        await stage.release_budget(budget - shared_budget, mgr)
                         add_deferred_parent(stage.stage_id, shared_budget)
                         trackers = trackers + (
                             JoinTracker(
                                 task.ctx,
                                 len(child_ctxs),
-                                manager=self.manager,
+                                manager=mgr,
                                 stage_id=stage.stage_id,
                                 reserved_budget=shared_budget,
                                 on_release=release_deferred_parent,
@@ -536,7 +578,7 @@ class AsyncPipelineExecutor:
                             stages[next_stage_index].enqueue(child_task)
 
                     if not deferred_release:
-                        await stage.release_budget(budget, self.manager)
+                        await stage.release_budget(budget, mgr)
 
                     log_running_tasks(
                         f"finish task={task.task_id} stage={stage.stage_id} "
@@ -557,7 +599,7 @@ class AsyncPipelineExecutor:
                 else:
                     stages[next_stage_index].enqueue(next_task)
 
-                await stage.release_budget(budget, self.manager)
+                await stage.release_budget(budget, mgr)
                 log_running_tasks(
                     f"finish task={task.task_id} stage={stage.stage_id}"
                 )

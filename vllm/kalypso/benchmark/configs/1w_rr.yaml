@@ -1,0 +1,8 @@
+# Example pool config for the Kalypso coordinator:
+#   python -m vllm.kalypso.server --config vllm/kalypso/workers/example_workers.yaml
+policy: round_robin          # --policy on the command line overrides this
+workers:
+  - url: http://localhost:8001
+    name: w0
+  - url: http://localhost:8002
+    name: w1

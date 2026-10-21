@@ -20,10 +20,12 @@ from vllm.kalypso.context import (
 )
 from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.controller.map_estimator import MapRatioEstimator
+from vllm.kalypso.execution.determinism import BOOLEAN
 from vllm.kalypso.execution.pipeline_execution import BlockingExecutor
 
 
 class SemFilter(BaseOp):
+    determinism = BOOLEAN
 
     TRUE = 'true'
     FALSE = 'false'
@@ -85,6 +87,7 @@ class SemFilter(BaseOp):
                 max_tokens=self.max_tokens,
                 pin=False,
                 priority=priority,
+                determinism=self.determinism,
         )
         if self.pin:
             ctx.state.pin_req_id = data_result.request_id
