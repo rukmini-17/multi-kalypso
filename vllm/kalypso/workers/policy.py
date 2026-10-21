@@ -14,6 +14,7 @@ The pool is expected to provide:
 
 class RoundRobinPolicy:
     name = "round_robin"
+    sticky = False
 
     def __init__(self):
         self.next = 0  # index of the worker whose turn it is
@@ -34,6 +35,7 @@ class RoundRobinPolicy:
 
 class LeastOutstandingPolicy:
     name = "least_outstanding"
+    sticky = False
 
     def rank(self, pool, task=None):
         ws = list(pool.workers)
@@ -44,9 +46,16 @@ class LeastOutstandingPolicy:
         pass  # stateless: the load figure comes from the pool
 
 
+class RowAffinityPolicy(RoundRobinPolicy):
+    """Round robin for a row's first placement; every later call of the row stays there."""
+    name = "row_affinity"
+    sticky = True
+
+
 POLICIES = {
     RoundRobinPolicy.name: RoundRobinPolicy,
     LeastOutstandingPolicy.name: LeastOutstandingPolicy,
+    RowAffinityPolicy.name: RowAffinityPolicy,
 }
 
 

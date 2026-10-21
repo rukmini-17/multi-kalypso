@@ -31,6 +31,7 @@ from vllm.kalypso.query_processor import QueryProcessor
 from vllm.kalypso.workers.http_executor import HttpVLLMExecutor, unpin_owner
 from vllm.kalypso.workers.policy import make_policy
 from vllm.kalypso.workers.pool import WorkerPool, load_config, parse_urls
+from vllm.kalypso.workers.router import CallRouter
 
 
 class CoordinatorQueryProcessor(QueryProcessor):
@@ -91,7 +92,8 @@ def build_app(args) -> FastAPI:
         recorder = RequestRecorder(args.record_path)
         from vllm.kalypso.budget import KVMemoryManager
 
-        specs = load_config(args.config).workers if args.config else parse_urls(args.workers)
+        cfg = load_config(args.config) if args.config else None
+        specs = cfg.workers if cfg else parse_urls(args.workers)
         pool = await WorkerPool.discover(
             specs,
             executor_factory=lambda url, model, name: HttpVLLMExecutor(url, model, name=name, recorder=recorder),
@@ -110,16 +112,32 @@ def build_app(args) -> FastAPI:
             ],
         )
 
+        policy = make_policy(args.policy or (cfg.policy if cfg else None) or "round_robin")
         total_budget = pool.total_capacity()
+        if policy.sticky:
+            # row_affinity: admit() places each row once; its later calls stay there.
+            qp_pool, qp_policy, executor = pool, policy, workers[0].executor
+            router = None
+        else:
+            # Per-call routing: tasks are admitted against the pool total,
+            # and each LLM call picks its own worker.
+            router = CallRouter(
+                pool, policy,
+                lambda prompt, max_tokens: (
+                    KVMemoryManager.get_instance().token_length(prompt) + max_tokens
+                ) * KVMemoryManager.get_instance().bytes_per_token,
+            )
+            qp_pool, qp_policy, executor = None, None, router
+
         qp = CoordinatorQueryProcessor(
             model_name=model_name,
             budget=total_budget,
-            pool=pool,
-            policy=make_policy(args.policy),
+            pool=qp_pool,
+            policy=qp_policy,
             poller=poller,
         )
-        qp.executor = workers[0].executor  # only used to seed rows before admit()
-
+        qp.executor = executor
+        app.state.router = router
         app.state.query_processor = qp
         app.state.pool = pool
         app.state.recorder = recorder
@@ -128,7 +146,7 @@ def build_app(args) -> FastAPI:
         poller.start()
         print(
             f"[Coordinator] {len(workers)} workers, model={model_name}, "
-            f"policy={args.policy}, records={args.record_path}"
+            f"policy={policy.name}, records={args.record_path}"
         )
         try:
             yield
@@ -150,6 +168,9 @@ def build_app(args) -> FastAPI:
 
     @app.get("/v1/semantic/workers")
     async def workers_state(raw_request: Request):
+        router = getattr(raw_request.app.state, "router", None)
+        if router is not None:
+            return router.stats()
         pool = raw_request.app.state.pool
         poller = raw_request.app.state.poller
         return {
@@ -219,7 +240,7 @@ def main():
     src = p.add_mutually_exclusive_group(required=True)
     src.add_argument("--workers", help="comma-separated worker base URLs")
     src.add_argument("--config", help="YAML/JSON worker pool config")
-    p.add_argument("--policy", default="round_robin")
+    p.add_argument("--policy", default=None)
     p.add_argument("--record-path", default=None, help="JSONL file for instrumentation rows")
     p.add_argument("--poll-interval", type=float, default=0.5)
     args = p.parse_args()
