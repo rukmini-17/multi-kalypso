@@ -1,0 +1,68 @@
+name: Kalypso skip-inference correctness
+
+"on":
+  pull_request:
+    paths:
+      - "vllm/kalypso/**"
+      - "kalypso_tests/**"
+      - ".github/workflows/kalypso-skip-inference.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # samuel/old-seeded-baseline: team/main 05024f027 + seeded replies + skip inference.
+  # This oracle must be bumped deliberately.
+  KALYPSO_ORACLE_SHA: "7593d607503d9a1b2488caf5446a3ce54031dad4"
+
+concurrency:
+  group: kalypso-skip-inference-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  correctness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        payload: [filter_map_20.json, fever_filter_map_map_1000.json]
+        workers: [2, 4]
+        policy: [round_robin]
+    env:
+      OUT_DIR: kalypso_skip_${{ matrix.payload }}_${{ matrix.workers }}_${{ matrix.policy }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements/common.txt
+      - name: Cache tokenizer and config
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kalypso-tokenizer-${{ runner.os }}-Qwen2.5-0.5B-Instruct-v1
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements/common.txt
+      - name: Fetch pinned old oracle
+        run: git fetch --no-tags https://github.com/rukmini-17/multi-kalypso.git "$KALYPSO_ORACLE_SHA"
+      - name: Compare old and new without inference
+        run: |
+          vllm/kalypso/benchmark/skip_inference_old_vs_new.sh \
+            --old-ref "$KALYPSO_ORACLE_SHA" \
+            --payload "vllm/kalypso/benchmark/sample_data/${{ matrix.payload }}" \
+            -n "${{ matrix.workers }}" -p "${{ matrix.policy }}" -o "$OUT_DIR"
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skip-inference-${{ matrix.payload }}-${{ matrix.workers }}-${{ matrix.policy }}
+          path: |
+            ${{ env.OUT_DIR }}/
+            !${{ env.OUT_DIR }}/src_old/**
