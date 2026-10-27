@@ -1,0 +1,4029 @@
+{
+ "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+ "text_column": "text",
+ "records": [
+  {
+   "id": 0,
+   "text": "Great white sharks do not prefer dolphins as prey."
+  },
+  {
+   "id": 1,
+   "text": "Commodore is ranked above a rear admiral."
+  },
+  {
+   "id": 2,
+   "text": "Ron Dennis is unemployed."
+  },
+  {
+   "id": 3,
+   "text": "Konidela Production Company was established."
+  },
+  {
+   "id": 4,
+   "text": "Anna Nicole Smith worked for multiple real estate companies."
+  },
+  {
+   "id": 5,
+   "text": "Mount Hood is the lowest point in its state."
+  },
+  {
+   "id": 6,
+   "text": "Pocahontas attended a masque at Whitehall Palace which was a place where mostly English people gathered."
+  },
+  {
+   "id": 7,
+   "text": "Cleopatre is related to a work."
+  },
+  {
+   "id": 8,
+   "text": "The Airbus A380 made its first flight on Mars."
+  },
+  {
+   "id": 9,
+   "text": "Maggie Q starred in a CW series."
+  },
+  {
+   "id": 10,
+   "text": "Gaius Julius Caesar was the uncle of a dictator."
+  },
+  {
+   "id": 11,
+   "text": "Yvonne Strahovski was involved in an ABC period drama."
+  },
+  {
+   "id": 12,
+   "text": "Half Girlfriend was partially filmed in Delhi."
+  },
+  {
+   "id": 13,
+   "text": "In 2014, Sledgehammer was performed live for the first time."
+  },
+  {
+   "id": 14,
+   "text": "John Goodman has not had lead roles."
+  },
+  {
+   "id": 15,
+   "text": "DodgeBall: A True Underdog Story was written and directed solely by Rob Lowe."
+  },
+  {
+   "id": 16,
+   "text": "In Kentucky, the electric chair has been kept in operation except for those whose capital crimes were committed prior to March 31, 1998, and who choose electrocution."
+  },
+  {
+   "id": 17,
+   "text": "Practical Magic is an American romantic comedy film from 1958."
+  },
+  {
+   "id": 18,
+   "text": "Hebe's successor was Leto."
+  },
+  {
+   "id": 19,
+   "text": "Jenny McCarthy modeled for Maxim magazine."
+  },
+  {
+   "id": 20,
+   "text": "The Beverly Hillbillies had nine seasons starting in 1972."
+  },
+  {
+   "id": 21,
+   "text": "Younger premiered on magazine."
+  },
+  {
+   "id": 22,
+   "text": "Castlevania was developed for the Nintendo Wii."
+  },
+  {
+   "id": 23,
+   "text": "Joseph Merrick's was the subject of thousands of hate tweets."
+  },
+  {
+   "id": 24,
+   "text": "In 2008, Touch My Body was released."
+  },
+  {
+   "id": 25,
+   "text": "Foot Locker's full business name is Foot Locker Retail, Inc. and is referred to on the stock market as such.."
+  },
+  {
+   "id": 26,
+   "text": "Timur participated in an election."
+  },
+  {
+   "id": 27,
+   "text": "On May 19, 1945, Ian Gillan was born."
+  },
+  {
+   "id": 28,
+   "text": "There are one or more seasons of Heroes."
+  },
+  {
+   "id": 29,
+   "text": "Shomu Mukherjee died of liver failure."
+  },
+  {
+   "id": 30,
+   "text": "Internet access is the ability of organizations to disconnect the internet."
+  },
+  {
+   "id": 31,
+   "text": "Japan is in Asia."
+  },
+  {
+   "id": 32,
+   "text": "Manchester by the Sea is a film that was premiered at the Sundance Film Festival."
+  },
+  {
+   "id": 33,
+   "text": "Bonaire was part of the beef until 2010."
+  },
+  {
+   "id": 34,
+   "text": "The New England Patriots won five Super Bowls as of 2015."
+  },
+  {
+   "id": 35,
+   "text": "Road House is a movie."
+  },
+  {
+   "id": 36,
+   "text": "Samsung was separated into four business groups in Italy."
+  },
+  {
+   "id": 37,
+   "text": "The Block (album) was released by the band the Gin Blossoms."
+  },
+  {
+   "id": 38,
+   "text": "Mikhail Prokhorov is the former President of the United States."
+  },
+  {
+   "id": 39,
+   "text": "Sands Hotel and Casino started as a casino with 200 employees."
+  },
+  {
+   "id": 40,
+   "text": "MSG is an odor enhancer."
+  },
+  {
+   "id": 41,
+   "text": "A former Soviet nation was part of the Group of 15."
+  },
+  {
+   "id": 42,
+   "text": "See.SZA.Run is an EP."
+  },
+  {
+   "id": 43,
+   "text": "Producing jazz records is a career of Fred Seibert."
+  },
+  {
+   "id": 44,
+   "text": "Python supports multiple programming paradigms and is highly usable."
+  },
+  {
+   "id": 45,
+   "text": "Chris Paul is a two-time Olympic gold winner in basketball."
+  },
+  {
+   "id": 46,
+   "text": "Simon Cowell was not a part of a reality show."
+  },
+  {
+   "id": 47,
+   "text": "The Bengal tiger has stripes."
+  },
+  {
+   "id": 48,
+   "text": "Ed and Lorraine Warren investigated the paranormal."
+  },
+  {
+   "id": 49,
+   "text": "William Howard Taft declined offers of appointment to a federal court in 2014."
+  },
+  {
+   "id": 50,
+   "text": "The Fame sold 4.7 million digital copies through the Apple store."
+  },
+  {
+   "id": 51,
+   "text": "Chris Benoit died in June 2001."
+  },
+  {
+   "id": 52,
+   "text": "Shut Up debuted at number 33."
+  },
+  {
+   "id": 53,
+   "text": "Shannon Lee is a fighter trained in defense."
+  },
+  {
+   "id": 54,
+   "text": "The Burj Khalifa contains 57 cats."
+  },
+  {
+   "id": 55,
+   "text": "Quay premiered at a movie theater."
+  },
+  {
+   "id": 56,
+   "text": "Adobe Photoshop is a public company."
+  },
+  {
+   "id": 57,
+   "text": "The Danish language is spoken only outside of Canada."
+  },
+  {
+   "id": 58,
+   "text": "Pink is an American dancer."
+  },
+  {
+   "id": 59,
+   "text": "Ann Biderman died on August 15th, 1950."
+  },
+  {
+   "id": 60,
+   "text": "Cate Blanchett starred in the film The Good German."
+  },
+  {
+   "id": 61,
+   "text": "Legendary Entertainment and Wanda Cinemas are owned by the same entity."
+  },
+  {
+   "id": 62,
+   "text": "Akon has had more than ten songs certified as silver."
+  },
+  {
+   "id": 63,
+   "text": "Scandal is from the 1950's."
+  },
+  {
+   "id": 64,
+   "text": "The Romani people have settled."
+  },
+  {
+   "id": 65,
+   "text": "Ted Cruz has served as the junior United States Hamburgerler from Texas since 2013"
+  },
+  {
+   "id": 66,
+   "text": "The Monster is a work of art."
+  },
+  {
+   "id": 67,
+   "text": "Pakistan's economy is 32nd largest in nominal gross domestic product."
+  },
+  {
+   "id": 68,
+   "text": "Joni Mitchell released 17 albums of original songs."
+  },
+  {
+   "id": 69,
+   "text": "Personality is a set of individual similarities."
+  },
+  {
+   "id": 70,
+   "text": "Color of Night won zero Golden Raspberry awards."
+  },
+  {
+   "id": 71,
+   "text": "Dan Trachtenberg is a person."
+  },
+  {
+   "id": 72,
+   "text": "Loretta Sanchez is only German."
+  },
+  {
+   "id": 73,
+   "text": "Bala has no experience directing."
+  },
+  {
+   "id": 74,
+   "text": "The Book of Mormon won a Grammy Award for Best Musical Theater Album."
+  },
+  {
+   "id": 75,
+   "text": "Python supports object-oriented political parties."
+  },
+  {
+   "id": 76,
+   "text": "The Saturn Award for Best Fantasy Film is presented by the Academy of Motion Picture Arts and Sciences."
+  },
+  {
+   "id": 77,
+   "text": "Lee Daniels received a nomination for Best Actor."
+  },
+  {
+   "id": 78,
+   "text": "The New Jersey Turnpike has 12 meter lanes."
+  },
+  {
+   "id": 79,
+   "text": "Corsica is trade partners with Cap Corse."
+  },
+  {
+   "id": 80,
+   "text": "Muhammad Ali is immune to Parkinson's disease."
+  },
+  {
+   "id": 81,
+   "text": "The United States dollar is not used in the Caribbean."
+  },
+  {
+   "id": 82,
+   "text": "Laura Robson is an athlete."
+  },
+  {
+   "id": 83,
+   "text": "Scandinavia includes the remote Norwegian islands of Svalbard and Jan Mayen."
+  },
+  {
+   "id": 84,
+   "text": "The Visigoths converted from Arianism to Buddhism."
+  },
+  {
+   "id": 85,
+   "text": "The Danish language is spoken in Spain."
+  },
+  {
+   "id": 86,
+   "text": "Scandal is fronted by someone born on June 26, 1957."
+  },
+  {
+   "id": 87,
+   "text": "Stevie Ray Vaughan wrote Sweet Home Alabama."
+  },
+  {
+   "id": 88,
+   "text": "Simon Cowell was a part of a reality show."
+  },
+  {
+   "id": 89,
+   "text": "Sean Gunn has no experience as an actor."
+  },
+  {
+   "id": 90,
+   "text": "Ice-T began his career as a opera singer in the 1980s."
+  },
+  {
+   "id": 91,
+   "text": "Harry Fraud is a hip hop seller."
+  },
+  {
+   "id": 92,
+   "text": "Multicellular organisms include eurkaryotes."
+  },
+  {
+   "id": 93,
+   "text": "Sierra Morena is only an idiom."
+  },
+  {
+   "id": 94,
+   "text": "Bala has received the National Film Award for Best Director in 2011."
+  },
+  {
+   "id": 95,
+   "text": "Keegan-Michael Key played the character of Luther twice."
+  },
+  {
+   "id": 96,
+   "text": "The Walking Dead (comic book) inspired a film."
+  },
+  {
+   "id": 97,
+   "text": "Emperor Norton is immortalized by authors from different countries including Sweden, America, and England."
+  },
+  {
+   "id": 98,
+   "text": "The Colbert Report was taped Monday."
+  },
+  {
+   "id": 99,
+   "text": "Sausage Party is only a television show."
+  },
+  {
+   "id": 100,
+   "text": "Lorelai Gilmore's mother was played by Carrie Fisher."
+  },
+  {
+   "id": 101,
+   "text": "One Flew Over the Cuckoo's Nest won the five major Academy Awards the year it was released, the second film to do so."
+  },
+  {
+   "id": 102,
+   "text": "Castlevania came out in 3D in 1986."
+  },
+  {
+   "id": 103,
+   "text": "The electric chair is an optional form of execution in Alabama, Florida, South Carolina, and Virginia."
+  },
+  {
+   "id": 104,
+   "text": "Super Bowl XLV was the first time the Super Bowl was played in the Dallas-Fort Worth area and had the lowest recorded attendance of any Super Bowl up until that point."
+  },
+  {
+   "id": 105,
+   "text": "Cary Elwes is a teacher."
+  },
+  {
+   "id": 106,
+   "text": "William Cohen is a man."
+  },
+  {
+   "id": 107,
+   "text": "Charles de Gaulle lost all elections for President of the Fifth French Republic."
+  },
+  {
+   "id": 108,
+   "text": "Richard Kuklinski is alone."
+  },
+  {
+   "id": 109,
+   "text": "The thought of a coup d'\u00e9tat was only floated in Cyprus."
+  },
+  {
+   "id": 110,
+   "text": "Absinthe is a normal liquor."
+  },
+  {
+   "id": 111,
+   "text": "Lyon is in Germany."
+  },
+  {
+   "id": 112,
+   "text": "The ovary is an organ involved in the creation of new life."
+  },
+  {
+   "id": 113,
+   "text": "Macklemore sings with Ryan Lewis."
+  },
+  {
+   "id": 114,
+   "text": "The ovary is a Spanish organ."
+  },
+  {
+   "id": 115,
+   "text": "Cher was united in marriage to Sonny Bono."
+  },
+  {
+   "id": 116,
+   "text": "The SpongeBob SquarePants Movie stars a cat."
+  },
+  {
+   "id": 117,
+   "text": "The Dodo has been depicted with orange plumage."
+  },
+  {
+   "id": 118,
+   "text": "Mom (TV series) has been nominated at an award show."
+  },
+  {
+   "id": 119,
+   "text": "Milk is a 2003 Dutch film."
+  },
+  {
+   "id": 120,
+   "text": "Bob Ross was a landscape painter."
+  },
+  {
+   "id": 121,
+   "text": "Vampires caused deceit or assassinations in the neighborhoods they inhabited when they were alive."
+  },
+  {
+   "id": 122,
+   "text": "House of Balloons is someone's first mixtape."
+  },
+  {
+   "id": 123,
+   "text": "Brent Mydland was a member of the Grateful Dead."
+  },
+  {
+   "id": 124,
+   "text": "Practical Magic is based on a novel that was written by Waluigi."
+  },
+  {
+   "id": 125,
+   "text": "Absinthe is banned in some countries."
+  },
+  {
+   "id": 126,
+   "text": "The Icelandic Coast Guard is responsible for Iceland's coastal defense and it is significant to infrastructure."
+  },
+  {
+   "id": 127,
+   "text": "A Pet can only supply physical interaction."
+  },
+  {
+   "id": 128,
+   "text": "Bank of America only provides products."
+  },
+  {
+   "id": 129,
+   "text": "Samsung has developed and sold semiconductors."
+  },
+  {
+   "id": 130,
+   "text": "Zoey Deutch was born on a mountain."
+  },
+  {
+   "id": 131,
+   "text": "Gaius Julius Caesar died in Spain."
+  },
+  {
+   "id": 132,
+   "text": "Google Search can find stock quotes."
+  },
+  {
+   "id": 133,
+   "text": "Kyle Maclachlan has been nominated for an Emmy award because of a television series called Twin Peaks."
+  },
+  {
+   "id": 134,
+   "text": "Chadwick Boseman played Dan Brown."
+  },
+  {
+   "id": 135,
+   "text": "Kate Walsh was on a sitcom."
+  },
+  {
+   "id": 136,
+   "text": "Trouble with the Curve is only a podcast."
+  },
+  {
+   "id": 137,
+   "text": "The Invisible Man was based on a H. G. Wells novel."
+  },
+  {
+   "id": 138,
+   "text": "Hammer Film Productions has worked on horror movies."
+  },
+  {
+   "id": 139,
+   "text": "The Icelandic Coast Guard is responsible for something."
+  },
+  {
+   "id": 140,
+   "text": "Revolver has topped multiple charts."
+  },
+  {
+   "id": 141,
+   "text": "The Paper stars a cat."
+  },
+  {
+   "id": 142,
+   "text": "Mike Friedrich is a comic book writer."
+  },
+  {
+   "id": 143,
+   "text": "Arjit Singh is male."
+  },
+  {
+   "id": 144,
+   "text": "The Romani people arrived in Mid-West Asia 50,000 years ago."
+  },
+  {
+   "id": 145,
+   "text": "Boeing 787 Dreamliner was renamed in 2010."
+  },
+  {
+   "id": 146,
+   "text": "Ian Gillan is a dog."
+  },
+  {
+   "id": 147,
+   "text": "Norman Bates is a character."
+  },
+  {
+   "id": 148,
+   "text": "The SpongeBob SquarePants Movie is a dog."
+  },
+  {
+   "id": 149,
+   "text": "Daredevil is based on the Marvel Comics character of the same name."
+  },
+  {
+   "id": 150,
+   "text": "Chinatown was written by Robert Towne."
+  },
+  {
+   "id": 151,
+   "text": "Commodore is ranked between a navy captain and a rear end."
+  },
+  {
+   "id": 152,
+   "text": "Jamie Lee Curtis only starred in Rob Zombie's Halloween."
+  },
+  {
+   "id": 153,
+   "text": "SummerSlam was promoted by WWE."
+  },
+  {
+   "id": 154,
+   "text": "Anneliese van der Pol had an early career in science."
+  },
+  {
+   "id": 155,
+   "text": "Netscape Navigator was succeeded by the honeymoon suite."
+  },
+  {
+   "id": 156,
+   "text": "The Alfred P. Murrah Federal Building was only located in Downtown Nevada City, Oklahoma."
+  },
+  {
+   "id": 157,
+   "text": "The world's second largest economy by GDP is China."
+  },
+  {
+   "id": 158,
+   "text": "Innovation is often also viewed as the application of better solutions that meet new people."
+  },
+  {
+   "id": 159,
+   "text": "Andrew Carnegie has a 1889 article proclaiming ``The Gospel of Wealth''."
+  },
+  {
+   "id": 160,
+   "text": "Yin and yang demonstrate a balance between opposed entities."
+  },
+  {
+   "id": 161,
+   "text": "The only woman to compete in the Baja 1000 was Danica Patrick."
+  },
+  {
+   "id": 162,
+   "text": "Ed Decter is illiterate."
+  },
+  {
+   "id": 163,
+   "text": "P.S I Love You (film) is a drama based television show."
+  },
+  {
+   "id": 164,
+   "text": "The Church of Jesus Christ of Latter-day Saints has laws on chastity, health, and fasting."
+  },
+  {
+   "id": 165,
+   "text": "Louie (season 1) was created by David Benioff."
+  },
+  {
+   "id": 166,
+   "text": "Leslie Alexander is a former Catholic."
+  },
+  {
+   "id": 167,
+   "text": "Dissociative identity disorder is caused by major depressive disorder."
+  },
+  {
+   "id": 168,
+   "text": "Lois Lane's name was taken from Lola Lane's name."
+  },
+  {
+   "id": 169,
+   "text": "Natasha Lyonne also goes by the name Natasha Bianca Lyonne Braunstein."
+  },
+  {
+   "id": 170,
+   "text": "Idealism led the Visigoths."
+  },
+  {
+   "id": 171,
+   "text": "Taarak Mehta Ka Ooltah Chashmah is a sitcom."
+  },
+  {
+   "id": 172,
+   "text": "Andrea Pirlo is an American professional footballer."
+  },
+  {
+   "id": 173,
+   "text": "Dev Patel starred in Chappie, an animated movie."
+  },
+  {
+   "id": 174,
+   "text": "Ed Decter is an American actor."
+  },
+  {
+   "id": 175,
+   "text": "On April 10, 2008 Shomu Mukherjee died."
+  },
+  {
+   "id": 176,
+   "text": "Betsy Hodges was not elected."
+  },
+  {
+   "id": 177,
+   "text": "A player-coach may be an assistant coach or head coach."
+  },
+  {
+   "id": 178,
+   "text": "The House of the Spirits won fence."
+  },
+  {
+   "id": 179,
+   "text": "Military deception overlaps with the film PSYWAR."
+  },
+  {
+   "id": 180,
+   "text": "Adidas manufactures athletic shoes."
+  },
+  {
+   "id": 181,
+   "text": "Exotic Birds opened for an award-winning music duo."
+  },
+  {
+   "id": 182,
+   "text": "Shut Up was stolen by Stormzy."
+  },
+  {
+   "id": 183,
+   "text": "Birmingham is in the West Midlands."
+  },
+  {
+   "id": 184,
+   "text": "The Winds of Winter book six in a series of novels."
+  },
+  {
+   "id": 185,
+   "text": "Heaven Can Wait was filmed after Here Comes Mr. Jordan."
+  },
+  {
+   "id": 186,
+   "text": "Sands Hotel and Casino was established before Sahara Hotel and Casino."
+  },
+  {
+   "id": 187,
+   "text": "Solanum contains plants with ornamental roses."
+  },
+  {
+   "id": 188,
+   "text": "A President of the United States was the person who delivered the Gettysburg Address."
+  },
+  {
+   "id": 189,
+   "text": "Sebastian Vettel works for the MLB."
+  },
+  {
+   "id": 190,
+   "text": "Dev Patel has not worked with Neill Blomkamp."
+  },
+  {
+   "id": 191,
+   "text": "Gory Guerrero was of European descent."
+  },
+  {
+   "id": 192,
+   "text": "Jonah Hill ranked 28th on Forbes magazine's ranking of world's highest paid actors from June 5, 2014 to June 5, 2015."
+  },
+  {
+   "id": 193,
+   "text": "The American actor that plays Chumlee was born on the 10th."
+  },
+  {
+   "id": 194,
+   "text": "Foot Locker operates in 28 countries worldwide, including China."
+  },
+  {
+   "id": 195,
+   "text": "Bill Graham Civic Auditorium was built in Florida."
+  },
+  {
+   "id": 196,
+   "text": "Barbarella was directed by Roger Vadim."
+  },
+  {
+   "id": 197,
+   "text": "Issa Rae created Arrested Development."
+  },
+  {
+   "id": 198,
+   "text": "Robert Zemeckis has directed movies."
+  },
+  {
+   "id": 199,
+   "text": "General Motors' non-automotive brands divested in the 1980s through 2000s."
+  },
+  {
+   "id": 200,
+   "text": "The ovary is found in symmetrical pairs along the midline of the body."
+  },
+  {
+   "id": 201,
+   "text": "Therasia is an island in the island group of Santorini in the Greek Cyclades."
+  },
+  {
+   "id": 202,
+   "text": "Fidaa opted away from using a Dravidian language."
+  },
+  {
+   "id": 203,
+   "text": "Species distribution can be understood through factors like glaciation."
+  },
+  {
+   "id": 204,
+   "text": "Chris Bosh was incapable of winning his first NBA Finals title in 2012."
+  },
+  {
+   "id": 205,
+   "text": "The Boeing 767 became the most frequently used airliner for transatlantic flights between March and July."
+  },
+  {
+   "id": 206,
+   "text": "Boxing Helena debuted at Cannes."
+  },
+  {
+   "id": 207,
+   "text": "Temple Grandin stars Claire Danes as John F. Kennedy."
+  },
+  {
+   "id": 208,
+   "text": "The Pakistan Movement was the result of purely physical transformations."
+  },
+  {
+   "id": 209,
+   "text": "Cleopatre is related to Panurge."
+  },
+  {
+   "id": 210,
+   "text": "The Prague Castle is a location."
+  },
+  {
+   "id": 211,
+   "text": "The PRC has more members in China than the ROC."
+  },
+  {
+   "id": 212,
+   "text": "The Indiana Pacers were established."
+  },
+  {
+   "id": 213,
+   "text": "The Little Prince (2015 film) is directed by an American film director, writer, producer and animator."
+  },
+  {
+   "id": 214,
+   "text": "Jefferson Davis was born in Texas."
+  },
+  {
+   "id": 215,
+   "text": "Maximum Overdrive was written by The United States' government."
+  },
+  {
+   "id": 216,
+   "text": "Heath Ledger directed music videos for celebrities."
+  },
+  {
+   "id": 217,
+   "text": "Baadshah was dubbed into French."
+  },
+  {
+   "id": 218,
+   "text": "Blank Space is the name of a list."
+  },
+  {
+   "id": 219,
+   "text": "Issa Rae destroyed Awkward Black Girl."
+  },
+  {
+   "id": 220,
+   "text": "UNICEF UK is a UK National Committee."
+  },
+  {
+   "id": 221,
+   "text": "In 1860, Arthur Schopenhauer died."
+  },
+  {
+   "id": 222,
+   "text": "The Battle of the Trebia took place south of the Trebbia's confluence with the Seine river."
+  },
+  {
+   "id": 223,
+   "text": "Balibo (film) is about an investigation of crimes."
+  },
+  {
+   "id": 224,
+   "text": "Port of Spain is a village."
+  },
+  {
+   "id": 225,
+   "text": "Military deception overlaps with a type of warfare."
+  },
+  {
+   "id": 226,
+   "text": "Inside Llewyn Davis was screened for the Screen Actors Guild on May 19th, 2013."
+  },
+  {
+   "id": 227,
+   "text": "Alexandria is the largest seaport in Egypt."
+  },
+  {
+   "id": 228,
+   "text": "Large parts of North America was periodically covered by Cordilleran Ice Sheet."
+  },
+  {
+   "id": 229,
+   "text": "Sky UK is a company which serves only eastern Europe."
+  },
+  {
+   "id": 230,
+   "text": "Absinthe is a liquor."
+  },
+  {
+   "id": 231,
+   "text": "Petyr Baelish is nicknamed Littlefinger."
+  },
+  {
+   "id": 232,
+   "text": "SZA's music does not combine elements from different genres."
+  },
+  {
+   "id": 233,
+   "text": "An island is part of the ABC Islands."
+  },
+  {
+   "id": 234,
+   "text": "A United Kingdom is a biographical romantic drama play."
+  },
+  {
+   "id": 235,
+   "text": "Caleb McLaughlin finished college in 2001."
+  },
+  {
+   "id": 236,
+   "text": "Innovation is often also viewed as the application of a way to go around new requirements."
+  },
+  {
+   "id": 237,
+   "text": "The Indian National Congress was founded in Bombay."
+  },
+  {
+   "id": 238,
+   "text": "Hair (musical) won a contest for best revival of a musical."
+  },
+  {
+   "id": 239,
+   "text": "Ron Dennis is the Global Consultant for Citigroup."
+  },
+  {
+   "id": 240,
+   "text": "Jab Tak Hai Jaan was praised for its chemistry between its lead singers."
+  },
+  {
+   "id": 241,
+   "text": "Emmanuel Macron refused to work as an investment banker."
+  },
+  {
+   "id": 242,
+   "text": "The first annual Africa Cup of Nations occurred in 2015."
+  },
+  {
+   "id": 243,
+   "text": "Vic Mensa has been nominated for an award."
+  },
+  {
+   "id": 244,
+   "text": "Hermit crabs are diplopods."
+  },
+  {
+   "id": 245,
+   "text": "Spider-Man 2 was destroyed in 2004."
+  },
+  {
+   "id": 246,
+   "text": "Salman Rushdie published a novel in the United States."
+  },
+  {
+   "id": 247,
+   "text": "Volkswagen Group designs only non-commercial vehicles."
+  },
+  {
+   "id": 248,
+   "text": "Birmingham is a township."
+  },
+  {
+   "id": 249,
+   "text": "Gray Matters was released in 1906."
+  },
+  {
+   "id": 250,
+   "text": "Team Fortress 2 is incapable of being developed."
+  },
+  {
+   "id": 251,
+   "text": "An Oscar for Best Actor was won by One Flew Over the Cuckoo's Nest."
+  },
+  {
+   "id": 252,
+   "text": "Jerome Flynn was born on March 28."
+  },
+  {
+   "id": 253,
+   "text": "Andrew Moray favored English occupation of Scotland."
+  },
+  {
+   "id": 254,
+   "text": "SummerSlam is thrown by the WWE in arenas."
+  },
+  {
+   "id": 255,
+   "text": "Matt Bomer's middle name is Steven."
+  },
+  {
+   "id": 256,
+   "text": "Anxiety has been linked with physical symptoms."
+  },
+  {
+   "id": 257,
+   "text": "Vampire Academy was only a critical success."
+  },
+  {
+   "id": 258,
+   "text": "Mikhail Prokhorov is the former chairman of a Russian gold producer."
+  },
+  {
+   "id": 259,
+   "text": "Bonobos live south of the statue."
+  },
+  {
+   "id": 260,
+   "text": "Aristocracy is a term with Greek etymology."
+  },
+  {
+   "id": 261,
+   "text": "Lois Lane was influenced by a journalist."
+  },
+  {
+   "id": 262,
+   "text": "Brie Larson volunteered with Destin Daniel."
+  },
+  {
+   "id": 263,
+   "text": "Jab Tak Hai Jaan was praised for its cinematography."
+  },
+  {
+   "id": 264,
+   "text": "Robert Zemeckis has made movies for children."
+  },
+  {
+   "id": 265,
+   "text": "John Goodman played Babe Ruth in Field of Dreams."
+  },
+  {
+   "id": 266,
+   "text": "Caleb McLaughlin finished college in October."
+  },
+  {
+   "id": 267,
+   "text": "Sausage Party was only directed by Donald Trump."
+  },
+  {
+   "id": 268,
+   "text": "Richard Kuklinski has a family."
+  },
+  {
+   "id": 269,
+   "text": "South Island has a 32 percent bigger land area than the North Island."
+  },
+  {
+   "id": 270,
+   "text": "Ned Stark was barely nominated for an award."
+  },
+  {
+   "id": 271,
+   "text": "Jed Whedon has no parents."
+  },
+  {
+   "id": 272,
+   "text": "Zoe Saldana's birthday is May 19."
+  },
+  {
+   "id": 273,
+   "text": "Japan is represented by two centralized governments."
+  },
+  {
+   "id": 274,
+   "text": "Sausage Party is a computer-animated horror."
+  },
+  {
+   "id": 275,
+   "text": "The Monster only appears on the album The Marshall Mathers LP."
+  },
+  {
+   "id": 276,
+   "text": "Gotham City Sirens is a classic comic book series."
+  },
+  {
+   "id": 277,
+   "text": "Jefferson Davis grew up in the United States."
+  },
+  {
+   "id": 278,
+   "text": "Netscape Navigator's successor was the Netscape Communicator suite."
+  },
+  {
+   "id": 279,
+   "text": "The Punisher is an anime."
+  },
+  {
+   "id": 280,
+   "text": "Nina Jacobson was president of a Walt Disney Company subsidiary."
+  },
+  {
+   "id": 281,
+   "text": "Younger premiered on March 31, 2015."
+  },
+  {
+   "id": 282,
+   "text": "Boeing 787 Dreamliner was renamed by Tesla."
+  },
+  {
+   "id": 283,
+   "text": "Keegan-Michael Key awarded the character of Luther."
+  },
+  {
+   "id": 284,
+   "text": "Tennessee stayed in the Union."
+  },
+  {
+   "id": 285,
+   "text": "The Chaperone (film) is an American silent film."
+  },
+  {
+   "id": 286,
+   "text": "The Wonder Years was a drama."
+  },
+  {
+   "id": 287,
+   "text": "Jack Dylan Grazer's grandparents are Angela Lafever and Gavin Grazer."
+  },
+  {
+   "id": 288,
+   "text": "Spider-Man 2 was released in 1904."
+  },
+  {
+   "id": 289,
+   "text": "Antigua has a foreign population."
+  },
+  {
+   "id": 290,
+   "text": "The Love Club EP is the debut extended play of singer Ella Marija Lani Yelich-O'Connor."
+  },
+  {
+   "id": 291,
+   "text": "Eurotas (river) is in Europe."
+  },
+  {
+   "id": 292,
+   "text": "Raja Hindustani is a drama romance movie from 1996."
+  },
+  {
+   "id": 293,
+   "text": "Hammer Film Productions began producing films in 2013."
+  },
+  {
+   "id": 294,
+   "text": "SummerSlam was promoted by WWE in 2015."
+  },
+  {
+   "id": 295,
+   "text": "Jean-Jacques Dessalines was partially in charge of the Haitian Revolution."
+  },
+  {
+   "id": 296,
+   "text": "Emilia Clarke is an actress."
+  },
+  {
+   "id": 297,
+   "text": "The Hunger Games is a book."
+  },
+  {
+   "id": 298,
+   "text": "Project Y was a movie."
+  },
+  {
+   "id": 299,
+   "text": "Legendary Entertainment has been a subsidiary of Wanda Group since 2016."
+  },
+  {
+   "id": 300,
+   "text": "Anne Boleyn was not maid of honour to the Queen of England."
+  },
+  {
+   "id": 301,
+   "text": "Pakistan is a federal parliamentary republic in South Asia."
+  },
+  {
+   "id": 302,
+   "text": "Jack Dylan Grazer was born in the month of September."
+  },
+  {
+   "id": 303,
+   "text": "Bonaire is excluded from the three BES islands in the Caribbean."
+  },
+  {
+   "id": 304,
+   "text": "The New Jersey Turnpike has 12 foot lanes."
+  },
+  {
+   "id": 305,
+   "text": "Sarah Hyland is from Mexico."
+  },
+  {
+   "id": 306,
+   "text": "P.S I Love You (film) is a 2000 television show."
+  },
+  {
+   "id": 307,
+   "text": "Kareem Abdul-Jabbar is ranked 3rd all-time in blocks and rebounds."
+  },
+  {
+   "id": 308,
+   "text": "GLOW does not have a first season."
+  },
+  {
+   "id": 309,
+   "text": "The American Civil War lasted 4 decades."
+  },
+  {
+   "id": 310,
+   "text": "Aubrey Anderson-Emmons did not star on Modern Family."
+  },
+  {
+   "id": 311,
+   "text": "Georgians arose from the kingdom of Kievan Rus."
+  },
+  {
+   "id": 312,
+   "text": "Elizabeth of York was the mother of more than one human."
+  },
+  {
+   "id": 313,
+   "text": "Anthony Scaramucci was born in Italy on January 6, 1964."
+  },
+  {
+   "id": 314,
+   "text": "Emperor Norton is widely known."
+  },
+  {
+   "id": 315,
+   "text": "Telephone consists of a verse-rap."
+  },
+  {
+   "id": 316,
+   "text": "The Nobel Prize in Chemistry was awarded to a person from a lake."
+  },
+  {
+   "id": 317,
+   "text": "Salman Rushdie wrote a novel published in December 1981."
+  },
+  {
+   "id": 318,
+   "text": "Victor Frankenstein is based on contemporary adaptations of a novel."
+  },
+  {
+   "id": 319,
+   "text": "Night of the Living Dead is a 1969 American independent horror film."
+  },
+  {
+   "id": 320,
+   "text": "Gory Guerrero was Hispanic and German."
+  },
+  {
+   "id": 321,
+   "text": "Georges Gilles de la Tourette failed to describe symptoms in 1884."
+  },
+  {
+   "id": 322,
+   "text": "Sabbir Khan directed zero films."
+  },
+  {
+   "id": 323,
+   "text": "American Library Association is the youngest of its kind."
+  },
+  {
+   "id": 324,
+   "text": "Hebe and Heracles were married."
+  },
+  {
+   "id": 325,
+   "text": "Color of Night came out in 2003."
+  },
+  {
+   "id": 326,
+   "text": "SpongeBob SquarePants is an American media franchise."
+  },
+  {
+   "id": 327,
+   "text": "Road House is a film."
+  },
+  {
+   "id": 328,
+   "text": "There was an attempt to incorporate Cyprus into Italy."
+  },
+  {
+   "id": 329,
+   "text": "Ron Dennis is the Global Consultant for Minsheng Investment Corporation."
+  },
+  {
+   "id": 330,
+   "text": "Charles Howard Hinton was born in 1975."
+  },
+  {
+   "id": 331,
+   "text": "Sejong the Great was born in May in Brazil."
+  },
+  {
+   "id": 332,
+   "text": "Brian De Palma is exclusively British."
+  },
+  {
+   "id": 333,
+   "text": "L. Ron Hubbard spent the remaining years of his life on his ranch the \"Whispering Wind.\""
+  },
+  {
+   "id": 334,
+   "text": "Prince Charles and Lady Diana's wedding anniversary was a traditional wedding service."
+  },
+  {
+   "id": 335,
+   "text": "Practical Magic is based on a 1995 novel."
+  },
+  {
+   "id": 336,
+   "text": "SpongeBob SquarePants is a series."
+  },
+  {
+   "id": 337,
+   "text": "Golf is a racket and shuttlecock sport."
+  },
+  {
+   "id": 338,
+   "text": "Johnny Van Zant still performs with sunglasses."
+  },
+  {
+   "id": 339,
+   "text": "Paul von Hindenburg was a military officer."
+  },
+  {
+   "id": 340,
+   "text": "GLOW was released on VHS."
+  },
+  {
+   "id": 341,
+   "text": "Oscar Isaac did not appear in Star Wars: The Force Awakens."
+  },
+  {
+   "id": 342,
+   "text": "Exit the King premiered in 1962."
+  },
+  {
+   "id": 343,
+   "text": "Michael Hutchence has yet to die."
+  },
+  {
+   "id": 344,
+   "text": "Sledgehammer was first performed live in America."
+  },
+  {
+   "id": 345,
+   "text": "Lee Daniels directed a movie based off the book \"Push.\""
+  },
+  {
+   "id": 346,
+   "text": "Hinduism has the Sruti."
+  },
+  {
+   "id": 347,
+   "text": "Raja Hindustani is a film with a Indian based production team."
+  },
+  {
+   "id": 348,
+   "text": "Sausage Party was released in May of 2016."
+  },
+  {
+   "id": 349,
+   "text": "Shannon Lee is a businesswoman who has had success."
+  },
+  {
+   "id": 350,
+   "text": "Parkinson's disease causes symptoms."
+  },
+  {
+   "id": 351,
+   "text": "James Brolin is an actor."
+  },
+  {
+   "id": 352,
+   "text": "Jiang Wen was born on a campground."
+  },
+  {
+   "id": 353,
+   "text": "The Vandals were North Germanic tribes or groups of tribes."
+  },
+  {
+   "id": 354,
+   "text": "See You on the Other Side was involved with the production team of The Truman Show."
+  },
+  {
+   "id": 355,
+   "text": "The Burj Khalifa is in Southeast Asia."
+  },
+  {
+   "id": 356,
+   "text": "Super Bowl XLV was played in Grassy Butte, North Dakota."
+  },
+  {
+   "id": 357,
+   "text": "Gory Guerrero was a professional athlete."
+  },
+  {
+   "id": 358,
+   "text": "Michael J. Fox is immune to Parkinson's disease."
+  },
+  {
+   "id": 359,
+   "text": "Riz Ahmed acted in a historical miniseries based on a British television series."
+  },
+  {
+   "id": 360,
+   "text": "Ed Gein had exhumed corpses from eight local graveyards."
+  },
+  {
+   "id": 361,
+   "text": "Veep has won the Television Critics Association Award for Outstanding Achievement in Comedy."
+  },
+  {
+   "id": 362,
+   "text": "Maria Theresa ruled for 40 years."
+  },
+  {
+   "id": 363,
+   "text": "Hebe was the cupbearer for hikers of Mount Olympus."
+  },
+  {
+   "id": 364,
+   "text": "Amancio Ortega's last name is Gaona."
+  },
+  {
+   "id": 365,
+   "text": "The House of the Spirits received German Film Awards."
+  },
+  {
+   "id": 366,
+   "text": "Google Search is the product of an American multinational manufacturing company."
+  },
+  {
+   "id": 367,
+   "text": "Moscovium is a synthetic element."
+  },
+  {
+   "id": 368,
+   "text": "Doug Petrie played three roles in Dr. Horrible's Sing-Along Blog."
+  },
+  {
+   "id": 369,
+   "text": "Benjamin Walker (actor) is a Catholic."
+  },
+  {
+   "id": 370,
+   "text": "Scandal is a band."
+  },
+  {
+   "id": 371,
+   "text": "Ed Gagliardi battled cancer in Japan."
+  },
+  {
+   "id": 372,
+   "text": "Prague Castle attracts over 1.8 million visitors annually."
+  },
+  {
+   "id": 373,
+   "text": "Harry Fraud refused to intern at a recording studio."
+  },
+  {
+   "id": 374,
+   "text": "American Library Association is the oldest of its kind and it is in the world."
+  },
+  {
+   "id": 375,
+   "text": "Chris Bosh knows how to code."
+  },
+  {
+   "id": 376,
+   "text": "Harry Fraud was unable to graduate high school."
+  },
+  {
+   "id": 377,
+   "text": "Brian De Palma is a screenwriter."
+  },
+  {
+   "id": 378,
+   "text": "Mikhail Prokhorov is the former chairman of Polyus Gold."
+  },
+  {
+   "id": 379,
+   "text": "Alan Shepard served in the first Tex Mex restaurant."
+  },
+  {
+   "id": 380,
+   "text": "Rick Ross released Emotion."
+  },
+  {
+   "id": 381,
+   "text": "George Harrison married his second wife in 1958."
+  },
+  {
+   "id": 382,
+   "text": "Jefferson Davis grew up on cotton plantations."
+  },
+  {
+   "id": 383,
+   "text": "Kaya Scodelario performed in teen drama Skins."
+  },
+  {
+   "id": 384,
+   "text": "Matt Bomer is a performer."
+  },
+  {
+   "id": 385,
+   "text": "Kojol received an award."
+  },
+  {
+   "id": 386,
+   "text": "University of Chicago Law School is ranked egg in the 2016 QS World University Rankings."
+  },
+  {
+   "id": 387,
+   "text": "Watertown, Massachusetts is a city."
+  },
+  {
+   "id": 388,
+   "text": "Temple Mount is the holiest site in Judaism."
+  },
+  {
+   "id": 389,
+   "text": "George A. Romero directed Night of the Living Dead."
+  },
+  {
+   "id": 390,
+   "text": "Mount Hood belongs to the Pacific Northwest."
+  },
+  {
+   "id": 391,
+   "text": "Aubrey Anderson-Emmons is a child singer."
+  },
+  {
+   "id": 392,
+   "text": "Alan White was an Ambassador to Cambodia."
+  },
+  {
+   "id": 393,
+   "text": "Java is the fifth largest island in Indonesia."
+  },
+  {
+   "id": 394,
+   "text": "The Fame has sold over 4.5 million copies."
+  },
+  {
+   "id": 395,
+   "text": "Mandy Moore is a musician."
+  },
+  {
+   "id": 396,
+   "text": "A Backing vocalist's responsibility includes singing with the other backing vocalists."
+  },
+  {
+   "id": 397,
+   "text": "Celebrity Rehab with Dr. Drew was set in Pasadena, California at the Pasadena Civic Center."
+  },
+  {
+   "id": 398,
+   "text": "Doxycycline may cause blue to change color."
+  },
+  {
+   "id": 399,
+   "text": "Scream 2 was written exclusively by Barack Obama."
+  },
+  {
+   "id": 400,
+   "text": "Camp Flog Gnaw is hosted by musicians."
+  },
+  {
+   "id": 401,
+   "text": "Parkinson's disease has afflicted people."
+  },
+  {
+   "id": 402,
+   "text": "Samsung has developed and marketed semiconductors since 1983."
+  },
+  {
+   "id": 403,
+   "text": "Maximum Overdrive was written solely by George R. R. Martin."
+  },
+  {
+   "id": 404,
+   "text": "Akon has songs certified as gold."
+  },
+  {
+   "id": 405,
+   "text": "Johnny Van Zant is incapable of being a musician."
+  },
+  {
+   "id": 406,
+   "text": "The Maze Runner is a narrative in a visual medium."
+  },
+  {
+   "id": 407,
+   "text": "William Cohen is from a state in the U.S."
+  },
+  {
+   "id": 408,
+   "text": "Keith Stanfield's full name is Catholic."
+  },
+  {
+   "id": 409,
+   "text": "Ann Biderman is an American television writer."
+  },
+  {
+   "id": 410,
+   "text": "Rehab was unqualified to win Best Contemporary Song."
+  },
+  {
+   "id": 411,
+   "text": "Sierra Morena is bereft of culture and tradition."
+  },
+  {
+   "id": 412,
+   "text": "The Winds of Winter is being written by George R. R. Martin with an estimated publication date of 2020."
+  },
+  {
+   "id": 413,
+   "text": "Vedic Sanskrit is the language of texts compiled in the 2nd and 1st centuries BCE."
+  },
+  {
+   "id": 414,
+   "text": "Reanimation is an album."
+  },
+  {
+   "id": 415,
+   "text": "David Attenborough served as the program director for BBC Television."
+  },
+  {
+   "id": 416,
+   "text": "The American actor that plays Chumlee is a businessman and was on television."
+  },
+  {
+   "id": 417,
+   "text": "Pythagoras was an Ionian Greek chemist."
+  },
+  {
+   "id": 418,
+   "text": "Charles Howard Hinton worked in his home country of Angora for the majority of his life."
+  },
+  {
+   "id": 419,
+   "text": "Shape of You topped the singles charts of 30 different countries."
+  },
+  {
+   "id": 420,
+   "text": "Solanum excludes the nightshades."
+  },
+  {
+   "id": 421,
+   "text": "The soundtrack of Far from the Madding Crowd was by Richard Rodney Bennett."
+  },
+  {
+   "id": 422,
+   "text": "Java is landlocked."
+  },
+  {
+   "id": 423,
+   "text": "Ice-T had a debut album."
+  },
+  {
+   "id": 424,
+   "text": "The Love Club EP is too short to qualify for a Grammy."
+  },
+  {
+   "id": 425,
+   "text": "Caesar is a comedic adaptation of Julius Caesar."
+  },
+  {
+   "id": 426,
+   "text": "Ned Stark was introduced in 1996's A Storm of Swords."
+  },
+  {
+   "id": 427,
+   "text": "Planet Hollywood Las Vegas is owned by Martin Scorsese."
+  },
+  {
+   "id": 428,
+   "text": "Antigua is in the encyclopedia."
+  },
+  {
+   "id": 429,
+   "text": "Samsung exited the construction and shipbuilding industries in the mid-1970s."
+  },
+  {
+   "id": 430,
+   "text": "Chinatown's screenplay was by Robert Frost only."
+  },
+  {
+   "id": 431,
+   "text": "Elizabeth of York married the king."
+  },
+  {
+   "id": 432,
+   "text": "The Incredibles 2 is scheduled to be released on June 15, 2018."
+  },
+  {
+   "id": 433,
+   "text": "China is larger than the United States of America."
+  },
+  {
+   "id": 434,
+   "text": "Punch-Drunk Love had an American film studio as a distributor."
+  },
+  {
+   "id": 435,
+   "text": "Pocahontas was not the daughter of the paramount chief of Wahunsenacah."
+  },
+  {
+   "id": 436,
+   "text": "The SpongeBob SquarePants Movie stars Clancy Brown and a cat."
+  },
+  {
+   "id": 437,
+   "text": "Anne Boleyn was in England in 1522."
+  },
+  {
+   "id": 438,
+   "text": "AFC Asian Cup  was won four times by the Japan national football team."
+  },
+  {
+   "id": 439,
+   "text": "Battle of the Bastards aired in Canada."
+  },
+  {
+   "id": 440,
+   "text": "The Colbert Report was broadcast Monday."
+  },
+  {
+   "id": 441,
+   "text": "Daenerys Targaryen was introduced in a flashback."
+  },
+  {
+   "id": 442,
+   "text": "Keith Stanfield died on August 12, 1991."
+  },
+  {
+   "id": 443,
+   "text": "The Catcher in the Rye examines themes such as innocence and connection."
+  },
+  {
+   "id": 444,
+   "text": "Lee Daniels received a nomination for Best Director."
+  },
+  {
+   "id": 445,
+   "text": "Shannon Lee is not an actress."
+  },
+  {
+   "id": 446,
+   "text": "Chris Mullin has yet to play with a team based in Indianapolis."
+  },
+  {
+   "id": 447,
+   "text": "Doug Petrie has yet to appear on the web."
+  },
+  {
+   "id": 448,
+   "text": "Punch-Drunk Love was distributed by an American television studio."
+  },
+  {
+   "id": 449,
+   "text": "Jerome Flynn is an American singer."
+  },
+  {
+   "id": 450,
+   "text": "UNESCO's City of Literature program is part of a larger network."
+  },
+  {
+   "id": 451,
+   "text": "Joseph Goebbels, with his Propaganda Ministry, controlled the news media, arts, and information in Germany."
+  },
+  {
+   "id": 452,
+   "text": "Anneliese van der Pol was always disassociated from That's So Raven."
+  },
+  {
+   "id": 453,
+   "text": "Scream 2 was made May 1997."
+  },
+  {
+   "id": 454,
+   "text": "Georgians barely arose from the ancient Iberian civilizations."
+  },
+  {
+   "id": 455,
+   "text": "Issa Rae features various content created by creative people."
+  },
+  {
+   "id": 456,
+   "text": "Kenny Chesney's full name is Kenneth Arnold Chesney, a name given to him by his parents."
+  },
+  {
+   "id": 457,
+   "text": "Lucy Hale is North Dakotan."
+  },
+  {
+   "id": 458,
+   "text": "Emperor Norton is the basis of characters in games."
+  },
+  {
+   "id": 459,
+   "text": "The last festival in Stanley Park was in 2006."
+  },
+  {
+   "id": 460,
+   "text": "Chris Mullin played with the Indiana Pacers from 1997 until the 1999-2000 season when he died suddenly."
+  },
+  {
+   "id": 461,
+   "text": "Brick Mansions is an adaptation."
+  },
+  {
+   "id": 462,
+   "text": "Arthur Schopenhauer was a taxidermist."
+  },
+  {
+   "id": 463,
+   "text": "The Man in the Iron Mask was directed by Randall Wallace."
+  },
+  {
+   "id": 464,
+   "text": "Temple Grandin was directed by a person."
+  },
+  {
+   "id": 465,
+   "text": "Exotic Birds opened for a band."
+  },
+  {
+   "id": 466,
+   "text": "There was an attempt to change Cyprus."
+  },
+  {
+   "id": 467,
+   "text": "The United States dollar is the sole currency in two British Overseas Territories."
+  },
+  {
+   "id": 468,
+   "text": "The Africa Cup of Nations is held in odd-numbered years due to conflict with the World Cup."
+  },
+  {
+   "id": 469,
+   "text": "NXT Tag Team Championship was produced by the WWE on the developmental brand NXT."
+  },
+  {
+   "id": 470,
+   "text": "Andrew Moray opposed the occupation of north Scotland by King Edward I, favoring King John Balliol."
+  },
+  {
+   "id": 471,
+   "text": "Floyd Mayweather Jr. is incapable of boxing."
+  },
+  {
+   "id": 472,
+   "text": "The Maltese language is a co-official language of Malta, alongside English."
+  },
+  {
+   "id": 473,
+   "text": "Toy Story 2 is an animated film."
+  },
+  {
+   "id": 474,
+   "text": "Simon Cowell is a miser."
+  },
+  {
+   "id": 475,
+   "text": "Boxing Helena debuted at the Toronto International Film Festival."
+  },
+  {
+   "id": 476,
+   "text": "Catching Fire is the second film in The Hunger Games trilogy."
+  },
+  {
+   "id": 477,
+   "text": "Cleopatre is by Vivaldi."
+  },
+  {
+   "id": 478,
+   "text": "Blank Space is on a top 10 list in the country Germany."
+  },
+  {
+   "id": 479,
+   "text": "Joni Mitchell has toured."
+  },
+  {
+   "id": 480,
+   "text": "Shannon Lee is French."
+  },
+  {
+   "id": 481,
+   "text": "What requires the use of computer terminals are Internet Access."
+  },
+  {
+   "id": 482,
+   "text": "The Maze Runner is a television series."
+  },
+  {
+   "id": 483,
+   "text": "Red Bull Racing is based in a country."
+  },
+  {
+   "id": 484,
+   "text": "Andrea Pirlo was born May 19, 1979 in Italy."
+  },
+  {
+   "id": 485,
+   "text": "Lyon had a population of over 500,000 in 2014."
+  },
+  {
+   "id": 486,
+   "text": "The Bengal tiger is a member of the largest cat species coming from the eponymous region in India."
+  },
+  {
+   "id": 487,
+   "text": "Dark matter is a hypothetical type of matter."
+  },
+  {
+   "id": 488,
+   "text": "Nate Diaz competed in World Extreme Cagefighting."
+  },
+  {
+   "id": 489,
+   "text": "Vic Mensa is from Houston, Texas."
+  },
+  {
+   "id": 490,
+   "text": "Jenny McCarthy did not model for Playboy magazine."
+  },
+  {
+   "id": 491,
+   "text": "Barcelona is Spain's first most populous municipality."
+  },
+  {
+   "id": 492,
+   "text": "Scaramouche is also called Scaramuccia."
+  },
+  {
+   "id": 493,
+   "text": "Loretta Sanchez is only a lawyer."
+  },
+  {
+   "id": 494,
+   "text": "Sennacherib was assassinated in 681 BCE by his brother."
+  },
+  {
+   "id": 495,
+   "text": "Mount Hood is in the Northeast."
+  },
+  {
+   "id": 496,
+   "text": "Shut Up is by hell yeah."
+  },
+  {
+   "id": 497,
+   "text": "Sacre-Coeur, Paris is a double obelisk."
+  },
+  {
+   "id": 498,
+   "text": "Spider-Man 2 was written by George R. R. Martin."
+  },
+  {
+   "id": 499,
+   "text": "The Tenth Doctor travels alone in The End of Time."
+  },
+  {
+   "id": 500,
+   "text": "Pakistan's semi-industrialized economy is the 25th largest in the world in 2016."
+  },
+  {
+   "id": 501,
+   "text": "Commodore is ranked between a navy captain and a rear admiral."
+  },
+  {
+   "id": 502,
+   "text": "Ned Stark was introduced in 1996's A Clash of Kings."
+  },
+  {
+   "id": 503,
+   "text": "Carey Hayes is a novelist."
+  },
+  {
+   "id": 504,
+   "text": "The Romani people are widespread."
+  },
+  {
+   "id": 505,
+   "text": "Jed Whedon was born in December 1974."
+  },
+  {
+   "id": 506,
+   "text": "The Airbus A380 made its first flight on June 27, 2005."
+  },
+  {
+   "id": 507,
+   "text": "Adam Lambert identifies as homosexual."
+  },
+  {
+   "id": 508,
+   "text": "Many flowers have been replanted in Stanley Park."
+  },
+  {
+   "id": 509,
+   "text": "Bob Ross created Mr. Roger's Neighborhood."
+  },
+  {
+   "id": 510,
+   "text": "Television series were produced by Ekta Kapoor."
+  },
+  {
+   "id": 511,
+   "text": "Oscar Isaac went to the premier of X-Men: Apocalypse."
+  },
+  {
+   "id": 512,
+   "text": "Tennessee is an American state."
+  },
+  {
+   "id": 513,
+   "text": "Robert Singer (producer) worked on a tv show."
+  },
+  {
+   "id": 514,
+   "text": "American Library Association has more than 62,000 members."
+  },
+  {
+   "id": 515,
+   "text": "A Good Day to Die Hard was written entirely by Josh Groban."
+  },
+  {
+   "id": 516,
+   "text": "Gaius Julius Caesar was only the mother of Gaius Julius Caesar."
+  },
+  {
+   "id": 517,
+   "text": "Linkin Park released 2 albums in 2003."
+  },
+  {
+   "id": 518,
+   "text": "The Cyclades are a group of islands."
+  },
+  {
+   "id": 519,
+   "text": "Salt River Valley contains the Flagstaff metropolitan area."
+  },
+  {
+   "id": 520,
+   "text": "Rehab was the recipient of an Ivor Novello Award."
+  },
+  {
+   "id": 521,
+   "text": "Brie Larson worked with director Destin Daniel."
+  },
+  {
+   "id": 522,
+   "text": "John Goodman played himself in The Babe."
+  },
+  {
+   "id": 523,
+   "text": "Stomp the Yard features Columbus Short in a leading role."
+  },
+  {
+   "id": 524,
+   "text": "The Thin Red Line (1998 film) features a performance by a dentist."
+  },
+  {
+   "id": 525,
+   "text": "Charlotte, North Carolina was the fourth-largest Banking center in the United States from 1995 to 2017."
+  },
+  {
+   "id": 526,
+   "text": "The Gettysburg Address was delivered by someone who was an assassin."
+  },
+  {
+   "id": 527,
+   "text": "Aphrodite is the son of Poseidon and Hera in Homer's Iliad."
+  },
+  {
+   "id": 528,
+   "text": "Hollow Man has a direct-to-video prequel."
+  },
+  {
+   "id": 529,
+   "text": "The SpongeBob SquarePants Movie only stars Donald Trump."
+  },
+  {
+   "id": 530,
+   "text": "The day before the Academy Awards is when the Independent Spirit Awards are held."
+  },
+  {
+   "id": 531,
+   "text": "The X-Files had award-winning seasons."
+  },
+  {
+   "id": 532,
+   "text": "Hannah and Her Sisters ends with a Christmas dinner."
+  },
+  {
+   "id": 533,
+   "text": "Aphrodite is unmarried."
+  },
+  {
+   "id": 534,
+   "text": "Lucy Hale was not in American Juniors."
+  },
+  {
+   "id": 535,
+   "text": "Antigua is in the Barbados."
+  },
+  {
+   "id": 536,
+   "text": "Toy Story 2 was released by Walt Disney Pictures."
+  },
+  {
+   "id": 537,
+   "text": "The Tracey Fragments had its North American premiere at night."
+  },
+  {
+   "id": 538,
+   "text": "Kate Walsh was on Grey's Anatomy."
+  },
+  {
+   "id": 539,
+   "text": "Azithromycin is available as a prescription medication."
+  },
+  {
+   "id": 540,
+   "text": "Uranium has an atomic number of zero."
+  },
+  {
+   "id": 541,
+   "text": "Johann Wolfgang von Goethe published part of Faust in 1808."
+  },
+  {
+   "id": 542,
+   "text": "Mercedes-Benz is a division of a German automobile manufacturer."
+  },
+  {
+   "id": 543,
+   "text": "It is customary to wear aprons while Trick-or-Treating."
+  },
+  {
+   "id": 544,
+   "text": "Musala is the highest paid sports player in the Balkan Peninsula."
+  },
+  {
+   "id": 545,
+   "text": "Romani people in the Republic of Macedonia make hand gestures."
+  },
+  {
+   "id": 546,
+   "text": "Google Search can return antonyms."
+  },
+  {
+   "id": 547,
+   "text": "Matt Bomer is 21 years old."
+  },
+  {
+   "id": 548,
+   "text": "Stephen Moyer was refused any role in Prince Valiant."
+  },
+  {
+   "id": 549,
+   "text": "Kevin Bacon was in a film directed by Patty Jenkins."
+  },
+  {
+   "id": 550,
+   "text": "The British established administrative law in Uganda."
+  },
+  {
+   "id": 551,
+   "text": "Port of Spain is on an island."
+  },
+  {
+   "id": 552,
+   "text": "The Group of 15 includes no Swahili-speaking countries."
+  },
+  {
+   "id": 553,
+   "text": "Edward Cullen is in fiction."
+  },
+  {
+   "id": 554,
+   "text": "Robert Singer (producer) has spent his entire career producing only live theater."
+  },
+  {
+   "id": 555,
+   "text": "The SpongeBob SquarePants Movie only stars Donald Trump."
+  },
+  {
+   "id": 556,
+   "text": "The Raven (2012 film) was released the United States in 2012."
+  },
+  {
+   "id": 557,
+   "text": "Super Bowl XLV was played on February 6, 2011 in Jamaica."
+  },
+  {
+   "id": 558,
+   "text": "Vera Wang was born on June 27, 1949."
+  },
+  {
+   "id": 559,
+   "text": "Ned Stark's cast was nominated for a Screen Actors Guild Award for Outstanding Performance by an Ensemble in a Drama Series and was successful."
+  },
+  {
+   "id": 560,
+   "text": "Ted Cruz's has a middle name."
+  },
+  {
+   "id": 561,
+   "text": "Scandinavia does not contain the remote Norwegian islands of Svalbard and Jan Mayen."
+  },
+  {
+   "id": 562,
+   "text": "Exotic Birds achieved worldwide success despite being unpopular locally."
+  },
+  {
+   "id": 563,
+   "text": "Catherine Keener appeared in Jumanji."
+  },
+  {
+   "id": 564,
+   "text": "Yugoslavia is a member of the Group of 15."
+  },
+  {
+   "id": 565,
+   "text": "Designated Survivor (TV series) is a movie."
+  },
+  {
+   "id": 566,
+   "text": "Mars is in the Andromeda galaxy."
+  },
+  {
+   "id": 567,
+   "text": "The Hyksos' chief deity is completely unaffiliated with any god of the desert."
+  },
+  {
+   "id": 568,
+   "text": "South Island has a 32 percent larger landmass than Barcelona."
+  },
+  {
+   "id": 569,
+   "text": "Mary McGee was the first woman to compete in the Baja 1000, in 1975."
+  },
+  {
+   "id": 570,
+   "text": "The SpongeBob SquarePants Movie stars Tom Cruise."
+  },
+  {
+   "id": 571,
+   "text": "Touch My Body is a television show."
+  },
+  {
+   "id": 572,
+   "text": "Zac Efron is six feet tall."
+  },
+  {
+   "id": 573,
+   "text": "Mellila is a city."
+  },
+  {
+   "id": 574,
+   "text": "Raja Hindustani was directed by Dharmesh Darshan in 1995."
+  },
+  {
+   "id": 575,
+   "text": "The Burj Khalifa contains 8 businesses."
+  },
+  {
+   "id": 576,
+   "text": "Times Higher Education World University Rankings is a publication of illustrations."
+  },
+  {
+   "id": 577,
+   "text": "Prague's historic center was first included in the UNESCO list of World Heritage Sites in 1992."
+  },
+  {
+   "id": 578,
+   "text": "Serotonin induces neuromodulation by binding to receptors."
+  },
+  {
+   "id": 579,
+   "text": "Ron Dennis has owned Absolute Taste for three years."
+  },
+  {
+   "id": 580,
+   "text": "Vic Mensa was born June 6, 1993 in Houston, Texas."
+  },
+  {
+   "id": 581,
+   "text": "Kenny Chesney is American and was born in Kentucky."
+  },
+  {
+   "id": 582,
+   "text": "Barbarella is comedy."
+  },
+  {
+   "id": 583,
+   "text": "Nawaz Sharif has been in office since June 2014."
+  },
+  {
+   "id": 584,
+   "text": "Kareena Kapoor garnered positive reviews."
+  },
+  {
+   "id": 585,
+   "text": "Elizabeth of York had several children including Mary and Arthur."
+  },
+  {
+   "id": 586,
+   "text": "Martial arts films contain numerous martial arts fights between characters."
+  },
+  {
+   "id": 587,
+   "text": "Levoamphetamine is a stimulant."
+  },
+  {
+   "id": 588,
+   "text": "Boxing Helena received critical praise."
+  },
+  {
+   "id": 589,
+   "text": "Physics' main goal is to understand the behavior of eels."
+  },
+  {
+   "id": 590,
+   "text": "The Africa Cup of Nations had its schedule changed to avoid conflict with the Europa Cup."
+  },
+  {
+   "id": 591,
+   "text": "Castlevania was developed for a Nintendo console."
+  },
+  {
+   "id": 592,
+   "text": "Yugoslavia was the majority economic contributor to the Group of 15."
+  },
+  {
+   "id": 593,
+   "text": "Rob McElhenney has yet to appear on television."
+  },
+  {
+   "id": 594,
+   "text": "John S. McCain Jr. entered the submarine service."
+  },
+  {
+   "id": 595,
+   "text": "Charles Howard Hinton was a math expert from Britain."
+  },
+  {
+   "id": 596,
+   "text": "Howard was in Iron Man."
+  },
+  {
+   "id": 597,
+   "text": "Sabbir Khan made his film producing debut in 2009."
+  },
+  {
+   "id": 598,
+   "text": "The Nobel Prize in Chemistry was awarded."
+  },
+  {
+   "id": 599,
+   "text": "Amancio Ortega was born on October 28th, 1936."
+  },
+  {
+   "id": 600,
+   "text": "Scream 2 is a slasher film."
+  },
+  {
+   "id": 601,
+   "text": "Absinthe has psychoactive properties that are exaggerated."
+  },
+  {
+   "id": 602,
+   "text": "The Airbus A380 entered commercial service on Mars."
+  },
+  {
+   "id": 603,
+   "text": "Keith Stanfield's entire name is LaKeith Lee \"Keith'' Stanfield."
+  },
+  {
+   "id": 604,
+   "text": "Virginia's largest export by monetary value is oranges."
+  },
+  {
+   "id": 605,
+   "text": "Military deception is a German form of strategically spreading false or misleading information."
+  },
+  {
+   "id": 606,
+   "text": "Riz Ahmed is an award nominated singer."
+  },
+  {
+   "id": 607,
+   "text": "Kate Walsh was on the Netflix series Sense8."
+  },
+  {
+   "id": 608,
+   "text": "The current Duke of York is Prince Andrew as of 2010."
+  },
+  {
+   "id": 609,
+   "text": "Temple of the Dog graduated in 2016."
+  },
+  {
+   "id": 610,
+   "text": "Ten matches were contested at SummerSlam, with no pre-show."
+  },
+  {
+   "id": 611,
+   "text": "A staging area is a location."
+  },
+  {
+   "id": 612,
+   "text": "The county council of Cambridgeshire is Cambridgeshire County Council."
+  },
+  {
+   "id": 613,
+   "text": "Parkinson's disease has afflicted squirrels."
+  },
+  {
+   "id": 614,
+   "text": "Alex Jones is the Zodiac Killer."
+  },
+  {
+   "id": 615,
+   "text": "Alan Shepard was Chief of the Astronaut Office from November 1963 to July 1969."
+  },
+  {
+   "id": 616,
+   "text": "Cyprus is a tourist destination."
+  },
+  {
+   "id": 617,
+   "text": "The Tracey Fragments played at the 2010 Toronto International Film Festival."
+  },
+  {
+   "id": 618,
+   "text": "Brazilian jiu-jitsu is a liberal art."
+  },
+  {
+   "id": 619,
+   "text": "Louie (season 1) began airing in the 2010s."
+  },
+  {
+   "id": 620,
+   "text": "Amy Winehouse died of nicotine poisoning."
+  },
+  {
+   "id": 621,
+   "text": "Scandal plays classic rock music."
+  },
+  {
+   "id": 622,
+   "text": "Dark matter is distinguishable from dark energy."
+  },
+  {
+   "id": 623,
+   "text": "Hebe's brother was Ganymede."
+  },
+  {
+   "id": 624,
+   "text": "The Brat Pack is a type of name given to a group."
+  },
+  {
+   "id": 625,
+   "text": "Watertown, Massachusetts is outside of any named county."
+  },
+  {
+   "id": 626,
+   "text": "Night of the Living Dead is a Spanish comic book."
+  },
+  {
+   "id": 627,
+   "text": "The Battle of the Trebia took place in the province of Cisalpine Gaul."
+  },
+  {
+   "id": 628,
+   "text": "Dev Patel has worked with Germans."
+  },
+  {
+   "id": 629,
+   "text": "Charles Howard Hinton was a British physicist."
+  },
+  {
+   "id": 630,
+   "text": "Heroes first season had less than 1 million viewers for each episode."
+  },
+  {
+   "id": 631,
+   "text": "Offers of appointment to a United States court were declined by William Howard Taft."
+  },
+  {
+   "id": 632,
+   "text": "The Brat Pack is only a nickname given to a group of old actors who appeared together in films."
+  },
+  {
+   "id": 633,
+   "text": "Jeb Bush is former President George H. W. Bush's eldest son."
+  },
+  {
+   "id": 634,
+   "text": "The Suite Life of Zack & Cody is a German sitcom."
+  },
+  {
+   "id": 635,
+   "text": "The Latvian Soviet Socialist Republic is never known as Soviet Latvia."
+  },
+  {
+   "id": 636,
+   "text": "Melilla shares a border with a country."
+  },
+  {
+   "id": 637,
+   "text": "Netscape Navigator was preceded by the Netscape Communicator suite."
+  },
+  {
+   "id": 638,
+   "text": "The Dodo has been depicted with a blue head."
+  },
+  {
+   "id": 639,
+   "text": "US Airways Flight 1549 had 140 passengers, 2 pilots, and 13 cabin staff on board."
+  },
+  {
+   "id": 640,
+   "text": "Oscar Isaac acted in Twilight."
+  },
+  {
+   "id": 641,
+   "text": "Azithromycin is only available under a brand name."
+  },
+  {
+   "id": 642,
+   "text": "Oscar Isaac acted as the superhero Apocalypse."
+  },
+  {
+   "id": 643,
+   "text": "Legendary Entertainment is owned by the owner of AMC Cinemas."
+  },
+  {
+   "id": 644,
+   "text": "Unison (Celine Dion album) was originally released in the nineteen nineties."
+  },
+  {
+   "id": 645,
+   "text": "Aldous Huxley barely published scripts."
+  },
+  {
+   "id": 646,
+   "text": "Josh Hutcherson was in a managerial position at a finance company."
+  },
+  {
+   "id": 647,
+   "text": "In golf, balls are hit into holes by players."
+  },
+  {
+   "id": 648,
+   "text": "Guns N' Roses started in 1980."
+  },
+  {
+   "id": 649,
+   "text": "A United Kingdom is a work."
+  },
+  {
+   "id": 650,
+   "text": "Henri Kontinen is currently ranked last in the world for doubles in tennis."
+  },
+  {
+   "id": 651,
+   "text": "Middlesex County is home to the city of Watertown, Massachusetts."
+  },
+  {
+   "id": 652,
+   "text": "Nawaz Sharif has been in office since June 5, 2013."
+  },
+  {
+   "id": 653,
+   "text": "William Blackstone was born in Boston."
+  },
+  {
+   "id": 654,
+   "text": "John Perry Barlow was a member of the Grateful Dead."
+  },
+  {
+   "id": 655,
+   "text": "Story of My Life is a song that was recorded."
+  },
+  {
+   "id": 656,
+   "text": "See You on the Other Side was established as gold in the US in January 2006."
+  },
+  {
+   "id": 657,
+   "text": "The Book of Mormon won a Tony Award for Best Musical."
+  },
+  {
+   "id": 658,
+   "text": "Elisha Cuthbert stars in The Quiet."
+  },
+  {
+   "id": 659,
+   "text": "The Nice Guys is a 2018 film."
+  },
+  {
+   "id": 660,
+   "text": "Sausage Party was only released in 2011."
+  },
+  {
+   "id": 661,
+   "text": "Richard Fortus is a member of the NRA."
+  },
+  {
+   "id": 662,
+   "text": "Doxycycline may cause birds."
+  },
+  {
+   "id": 663,
+   "text": "The Tracey Fragments had its North American premiere at a film festival."
+  },
+  {
+   "id": 664,
+   "text": "Moves Like Jagger is on the move."
+  },
+  {
+   "id": 665,
+   "text": "A. P. J. Abdul Kalam was elected as Prime Minister of India."
+  },
+  {
+   "id": 666,
+   "text": "The Giver was nominated for a People's Choice Award."
+  },
+  {
+   "id": 667,
+   "text": "George III was succeeded by his daughter."
+  },
+  {
+   "id": 668,
+   "text": "Kareem Abdul-Jabbar is ranked 3rd all-time in stamp collecting."
+  },
+  {
+   "id": 669,
+   "text": "James Brolin is French."
+  },
+  {
+   "id": 670,
+   "text": "Secret and technologically advanced airplanes were produced in Burbank, California."
+  },
+  {
+   "id": 671,
+   "text": "Scream has some level of success."
+  },
+  {
+   "id": 672,
+   "text": "Watchmen is a film about a group of mostly retired American superheroes."
+  },
+  {
+   "id": 673,
+   "text": "The Giver received a People's Choice Award nomination for Favorite Dramatic Movie."
+  },
+  {
+   "id": 674,
+   "text": "William Cohen is from America."
+  },
+  {
+   "id": 675,
+   "text": "The Dodo has been depicted with a grey shoe."
+  },
+  {
+   "id": 676,
+   "text": "See You on the Other Side was certified platinum on March 8, 2006."
+  },
+  {
+   "id": 677,
+   "text": "The soundtrack of Far from the Madding Crowd was by Richard Rodney Bennett in 2012."
+  },
+  {
+   "id": 678,
+   "text": "In states still using the electric chair to execute people, the prisoner is allowed the choice of lethal injection as an alternative method."
+  },
+  {
+   "id": 679,
+   "text": "Spider-Man 2 is an artistic work."
+  },
+  {
+   "id": 680,
+   "text": "In America, Warcraft was released by Columbia."
+  },
+  {
+   "id": 681,
+   "text": "IMDb is crowdsourced."
+  },
+  {
+   "id": 682,
+   "text": "Absinthe is alcohol free."
+  },
+  {
+   "id": 683,
+   "text": "The Indiana Pacers were never allowed to join a basketball league."
+  },
+  {
+   "id": 684,
+   "text": "Fargo (season 3) aired on FX at night."
+  },
+  {
+   "id": 685,
+   "text": "Southern Hospitality debuted at number 16 on the Billboard Hot 100."
+  },
+  {
+   "id": 686,
+   "text": "Baloch people are part of a writers' union."
+  },
+  {
+   "id": 687,
+   "text": "The Love Club EP is by Ella Marija Lani Yelich-O'Connor."
+  },
+  {
+   "id": 688,
+   "text": "There is a film that involves a journalist name Roger East titled Balibo (film)."
+  },
+  {
+   "id": 689,
+   "text": "The Quiet stars Elisha Cuthbert."
+  },
+  {
+   "id": 690,
+   "text": "Sejong the Great died in April of 1450."
+  },
+  {
+   "id": 691,
+   "text": "Bank of America has platforms."
+  },
+  {
+   "id": 692,
+   "text": "Ted Cruz's middle name is Edward."
+  },
+  {
+   "id": 693,
+   "text": "Johnny Van Zant is a painter."
+  },
+  {
+   "id": 694,
+   "text": "Cary Elwes is a writer."
+  },
+  {
+   "id": 695,
+   "text": "Logie Awards had over a million viewers."
+  },
+  {
+   "id": 696,
+   "text": "Charlotte, North Carolina is the third-largest banking center in the United States from 2017-present."
+  },
+  {
+   "id": 697,
+   "text": "Corsica is at the base of Cap Corse."
+  },
+  {
+   "id": 698,
+   "text": "The American Civil War took place in North America."
+  },
+  {
+   "id": 699,
+   "text": "A. P. J. Abdul Kalam was elected as a leader of India."
+  },
+  {
+   "id": 700,
+   "text": "Anthony Scaramucci is not an author."
+  },
+  {
+   "id": 701,
+   "text": "Gotham City Sirens was illustrated by Guillem March in 1954."
+  },
+  {
+   "id": 702,
+   "text": "Samsung has developed and marketed dogs."
+  },
+  {
+   "id": 703,
+   "text": "Macklemore is a baseball fan."
+  },
+  {
+   "id": 704,
+   "text": "Guns N' Roses is a hard rock band."
+  },
+  {
+   "id": 705,
+   "text": "Caleb McLaughlin was born on the day 14th."
+  },
+  {
+   "id": 706,
+   "text": "Andrew Moray opposed the occupation of north Scotland by King Edward I."
+  },
+  {
+   "id": 707,
+   "text": "An American was the scriptwriter for The Beguiled."
+  },
+  {
+   "id": 708,
+   "text": "Battle of the Bastards never aired in the United States."
+  },
+  {
+   "id": 709,
+   "text": "David Lloyd George was the subject of a UK-wide vote."
+  },
+  {
+   "id": 710,
+   "text": "Bala has given the National Film Award for Best Director."
+  },
+  {
+   "id": 711,
+   "text": "Punch-Drunk Love was produced by Adam Sandler."
+  },
+  {
+   "id": 712,
+   "text": "Cary Elwes was born in April 1962."
+  },
+  {
+   "id": 713,
+   "text": "No Strings Attached was released in 2007."
+  },
+  {
+   "id": 714,
+   "text": "The Quiet was released in May of 2005."
+  },
+  {
+   "id": 715,
+   "text": "Dan Trachtenberg is an occultist."
+  },
+  {
+   "id": 716,
+   "text": "Ten matches were possessed by SummerSlam."
+  },
+  {
+   "id": 717,
+   "text": "The Raven (2012 film) was unreleased in the United States."
+  },
+  {
+   "id": 718,
+   "text": "NXT Tag Team Championship was produced by World Wrestling Entertainment, Inc."
+  },
+  {
+   "id": 719,
+   "text": "Yves Saint Laurent lacks the ability to make clothes."
+  },
+  {
+   "id": 720,
+   "text": "Foot Locker is only known as Foot Locker."
+  },
+  {
+   "id": 721,
+   "text": "Goldie Hawn was in at least two movies."
+  },
+  {
+   "id": 722,
+   "text": "Super Bowl XLV was played on stilts."
+  },
+  {
+   "id": 723,
+   "text": "Resident Evil is a television series."
+  },
+  {
+   "id": 724,
+   "text": "There has been at least one windstorm in Stanley Park."
+  },
+  {
+   "id": 725,
+   "text": "Quay premiered at the Film Forum theatre in Manhattan."
+  },
+  {
+   "id": 726,
+   "text": "Sausage Party is a computer-animated sitcom."
+  },
+  {
+   "id": 727,
+   "text": "Donald Duck typically wears only a bracelet."
+  },
+  {
+   "id": 728,
+   "text": "Chris Benoit is immortal."
+  },
+  {
+   "id": 729,
+   "text": "Johnny Van Zant named a solo album Brickyard Road."
+  },
+  {
+   "id": 730,
+   "text": "Syria provided political support to Hezbollah."
+  },
+  {
+   "id": 731,
+   "text": "Species distribution can be understood through factors such as speciation and continental drift."
+  },
+  {
+   "id": 732,
+   "text": "William Cohen is illiterate."
+  },
+  {
+   "id": 733,
+   "text": "Norman Bates was published by Robert Bloch."
+  },
+  {
+   "id": 734,
+   "text": "Anxiety has been linked to other ailments."
+  },
+  {
+   "id": 735,
+   "text": "Moscovium was discovered in 115."
+  },
+  {
+   "id": 736,
+   "text": "Jonah Hill starred in Sausage Party as Doug the Wiener."
+  },
+  {
+   "id": 737,
+   "text": "The Dodo has been depicted with a grey and red head."
+  },
+  {
+   "id": 738,
+   "text": "Stomp the Yard stars an American actress born in the 1980s."
+  },
+  {
+   "id": 739,
+   "text": "Backing vocalists sing with other backing instrumentalists."
+  },
+  {
+   "id": 740,
+   "text": "Elizabeth of York married someone."
+  },
+  {
+   "id": 741,
+   "text": "The Times switched to a compact format in 2014."
+  },
+  {
+   "id": 742,
+   "text": "Phoenix, Arizona is not in the southwestern United States."
+  },
+  {
+   "id": 743,
+   "text": "Macklemore is a country singer."
+  },
+  {
+   "id": 744,
+   "text": "Kung Fu Panda made at least $60.2 million in theaters."
+  },
+  {
+   "id": 745,
+   "text": "Trouble with the Curve was directed by Ron Howard."
+  },
+  {
+   "id": 746,
+   "text": "The Icelandic Coast Guard is responsible for Iceland's aeronautical search and destroy."
+  },
+  {
+   "id": 747,
+   "text": "Qin dynasty started in China."
+  },
+  {
+   "id": 748,
+   "text": "Touch My Body was released in 1989."
+  },
+  {
+   "id": 749,
+   "text": "Augustus Prew's father was a teacher."
+  },
+  {
+   "id": 750,
+   "text": "Dark matter is a type of matter."
+  },
+  {
+   "id": 751,
+   "text": "Pocahontas was the daughter of the paramount chief of Ronkonkoma."
+  },
+  {
+   "id": 752,
+   "text": "Maria Theresa's father died in Spain."
+  },
+  {
+   "id": 753,
+   "text": "Vampires are deceased."
+  },
+  {
+   "id": 754,
+   "text": "Multiple shows on Cartoon Network employed John DiMaggio."
+  },
+  {
+   "id": 755,
+   "text": "Commodore is ranked superior to an elderly captain."
+  },
+  {
+   "id": 756,
+   "text": "James, Viscount Severn was born in the 2000s."
+  },
+  {
+   "id": 757,
+   "text": "Punch-Drunk Love was distributed by a film studio."
+  },
+  {
+   "id": 758,
+   "text": "One Dance was by a Mexican."
+  },
+  {
+   "id": 759,
+   "text": "Heath Ledger won the lottery after he died."
+  },
+  {
+   "id": 760,
+   "text": "Bala has received recognition."
+  },
+  {
+   "id": 761,
+   "text": "Ron Dennis serves as the Global Consultant for Minsheng Investment Corporation."
+  },
+  {
+   "id": 762,
+   "text": "The Visigoths gradually adopted the culture of their Hispano-Roman subjects under Reccared I in 589."
+  },
+  {
+   "id": 763,
+   "text": "Exit the King is by a writer."
+  },
+  {
+   "id": 764,
+   "text": "Lorelai Gilmore's father is named Emily."
+  },
+  {
+   "id": 765,
+   "text": "Sennacherib's designated successor was Esarhaddon."
+  },
+  {
+   "id": 766,
+   "text": "Kaya Scodelario is a capitalist."
+  },
+  {
+   "id": 767,
+   "text": "The 1998 American action drama The Man in the Iron Mask was written by Woody Allen."
+  },
+  {
+   "id": 768,
+   "text": "The Icelandic Coast Guard is rarely responsible for Iceland's maritime search and rescue."
+  },
+  {
+   "id": 769,
+   "text": "In 2015, among Mexicans, 70% of adults had consumed alcoholic drink in the last year."
+  },
+  {
+   "id": 770,
+   "text": "Bank of America withholds products and services."
+  },
+  {
+   "id": 771,
+   "text": "The Walking Dead (comic book) inspired a lawyer."
+  },
+  {
+   "id": 772,
+   "text": "Gaius Julius Caesar was a bassist."
+  },
+  {
+   "id": 773,
+   "text": "Doxycycline may cause tongue to change color."
+  },
+  {
+   "id": 774,
+   "text": "Bank of America has daycare centers."
+  },
+  {
+   "id": 775,
+   "text": "Charles Howard Hinton wrote science fiction."
+  },
+  {
+   "id": 776,
+   "text": "Morgan Fairchild exclusively acts in film."
+  },
+  {
+   "id": 777,
+   "text": "Riz Ahmed acted in an Portuguese miniseries based on a British television series."
+  },
+  {
+   "id": 778,
+   "text": "The Silver Surfer appears only in Icelandic comic books."
+  },
+  {
+   "id": 779,
+   "text": "Backing vocalists are performers."
+  },
+  {
+   "id": 780,
+   "text": "Charles Howard Hinton was a mathematician."
+  },
+  {
+   "id": 781,
+   "text": "Henry III of France was succeeded by Henry IV, founder of the House of Bourbon."
+  },
+  {
+   "id": 782,
+   "text": "The basis of characters in many authors' books in Emperor Norton."
+  },
+  {
+   "id": 783,
+   "text": "The Love Club EP is the sophomore extended play by Lorde."
+  },
+  {
+   "id": 784,
+   "text": "Louis Malle produced horror films."
+  },
+  {
+   "id": 785,
+   "text": "Boeing 787 Dreamliner has always had the same name."
+  },
+  {
+   "id": 786,
+   "text": "Charles Howard Hinton was a German writer."
+  },
+  {
+   "id": 787,
+   "text": "Chinatown is a 1874 film directed by Roman Polanski."
+  },
+  {
+   "id": 788,
+   "text": "The Challenge XXX: Dirty 30 is not a season of a TV series."
+  },
+  {
+   "id": 789,
+   "text": "Coins of the Swiss franc are used in Hungary."
+  },
+  {
+   "id": 790,
+   "text": "Tyler Perry is a filmmaker."
+  },
+  {
+   "id": 791,
+   "text": "Sausage Party was written by a cat."
+  },
+  {
+   "id": 792,
+   "text": "Fred Seibert produces for television and the internet."
+  },
+  {
+   "id": 793,
+   "text": "Manchester United is based in Bolton, Greater Manchester, England."
+  },
+  {
+   "id": 794,
+   "text": "Ragtime is the final film appearance of James Spader."
+  },
+  {
+   "id": 795,
+   "text": "Anna Nicole Smith modelled for Diesel."
+  },
+  {
+   "id": 796,
+   "text": "Quay premiered at a nonprofit drive-in theater."
+  },
+  {
+   "id": 797,
+   "text": "Anne Boleyn did not return to England."
+  },
+  {
+   "id": 798,
+   "text": "Roberto Orci worked."
+  },
+  {
+   "id": 799,
+   "text": "Ang Lee died October 23, 1954."
+  },
+  {
+   "id": 800,
+   "text": "The Church of Jesus Christ of Latter-day Saints has a public garden."
+  },
+  {
+   "id": 801,
+   "text": "Logie Awards is the name of a movie."
+  },
+  {
+   "id": 802,
+   "text": "UNICEF UK is one of 36 UNICEF National Committees based in the richest industrialised countries."
+  },
+  {
+   "id": 803,
+   "text": "SpongeBob SquarePants is not a media franchise."
+  },
+  {
+   "id": 804,
+   "text": "The Alfred P. Murrah Federal Building was studied in a constitutional federal republic."
+  },
+  {
+   "id": 805,
+   "text": "Sejong the Great was a queen."
+  },
+  {
+   "id": 806,
+   "text": "September was the month the American actor that plays Chumlee was born on."
+  },
+  {
+   "id": 807,
+   "text": "The Dodo has been depicted with a green beak."
+  },
+  {
+   "id": 808,
+   "text": "Antigua and Barbuda was named after an invocation of the Virgin Mary."
+  },
+  {
+   "id": 809,
+   "text": "Catherine Keener appeared in Into the Wild."
+  },
+  {
+   "id": 810,
+   "text": "Sean Gunn is best known for his role as Thomas Edison."
+  },
+  {
+   "id": 811,
+   "text": "In March of 2012, The Raven (2012 film) came out in a sovereign country in western Europe."
+  },
+  {
+   "id": 812,
+   "text": "Ekta Kapoor enjoyed Kumkum Bhagya."
+  },
+  {
+   "id": 813,
+   "text": "Python gives support for imperative programing."
+  },
+  {
+   "id": 814,
+   "text": "Ed Gagliardi passed away due to cancer."
+  },
+  {
+   "id": 815,
+   "text": "Vampire Academy grossed $15,423,306 million worldwide."
+  },
+  {
+   "id": 816,
+   "text": "Chinatown's screenplay was by Robert Towne and was written in 1970."
+  },
+  {
+   "id": 817,
+   "text": "Benjamin Walker (actor) was murdered in 1982."
+  },
+  {
+   "id": 818,
+   "text": "The Times was founded in 1980."
+  },
+  {
+   "id": 819,
+   "text": "The Monster is only a song by Tupac."
+  },
+  {
+   "id": 820,
+   "text": "The Quiet stars a cat."
+  },
+  {
+   "id": 821,
+   "text": "The Romani people have moved to Canada among other destinations."
+  },
+  {
+   "id": 822,
+   "text": "Two and a Half Men season ended in November."
+  },
+  {
+   "id": 823,
+   "text": "The Winds of Winter is being written by hand."
+  },
+  {
+   "id": 824,
+   "text": "James, Viscount Severn is the only son of Prince Edward and Sophie, Countess of Wessex."
+  },
+  {
+   "id": 825,
+   "text": "Burbank, California is a location where secret and technologically advanced airplanes were produced during the cold war."
+  },
+  {
+   "id": 826,
+   "text": "Quay premiered at a commercial movie theater."
+  },
+  {
+   "id": 827,
+   "text": "Sarah Hyland is exclusively a Broadway actor."
+  },
+  {
+   "id": 828,
+   "text": "Joseph Goebbels' Propaganda Ministry gained nothing after the Nazi Seizure of Power."
+  },
+  {
+   "id": 829,
+   "text": "Ice-T signed to Sire Records in 1987."
+  },
+  {
+   "id": 830,
+   "text": "Proponents of globalism tend to advocate for lowering tariffs for the rich."
+  },
+  {
+   "id": 831,
+   "text": "Chris Benoit's middle name is Jason."
+  },
+  {
+   "id": 832,
+   "text": "Salt River Valley is on the Hudson River."
+  },
+  {
+   "id": 833,
+   "text": "Mars contains the Tharsis region."
+  },
+  {
+   "id": 834,
+   "text": "The principal photography of Half Girlfriend started in June of 2016."
+  },
+  {
+   "id": 835,
+   "text": "Talulah Riley did not appear in Inception."
+  },
+  {
+   "id": 836,
+   "text": "Hair (musical) won a Drama Desk Award for best revival of a musical in 2010."
+  },
+  {
+   "id": 837,
+   "text": "Brazilian jiu-jitsu was influenced by taiji quan."
+  },
+  {
+   "id": 838,
+   "text": "General Motors' automotive-component went through changes in the 1980s through 2000s."
+  },
+  {
+   "id": 839,
+   "text": "There were 3,090,953 Mormon members in the mid 20th century."
+  },
+  {
+   "id": 840,
+   "text": "Wolfgang Amadeus Mozart was born in Salzburg in 1756."
+  },
+  {
+   "id": 841,
+   "text": "Secretary's cast included James Spader."
+  },
+  {
+   "id": 842,
+   "text": "The Vandals were an East Germanic tribe or group of tribes in the third century AD."
+  },
+  {
+   "id": 843,
+   "text": "The Raven (2012 film) was unreleased in Europe."
+  },
+  {
+   "id": 844,
+   "text": "Sacre-Coeur, Paris is anything except a double monument."
+  },
+  {
+   "id": 845,
+   "text": "Hannah and Her Sisters ends with a murder."
+  },
+  {
+   "id": 846,
+   "text": "Julie Bowen was born in Argentina."
+  },
+  {
+   "id": 847,
+   "text": "Kate Walsh played Dr. Addison Montgomery on Grey's Anatomy."
+  },
+  {
+   "id": 848,
+   "text": "Species distribution can be understood through factors like extinction."
+  },
+  {
+   "id": 849,
+   "text": "Emperor Norton has inspired fear."
+  },
+  {
+   "id": 850,
+   "text": "B. R. Ambedkar was called Baba Saheb by his followers."
+  },
+  {
+   "id": 851,
+   "text": "Anneliese van der Pol had an early career in musical theater."
+  },
+  {
+   "id": 852,
+   "text": "Charles Howard Hinton was born in the UK in 1853."
+  },
+  {
+   "id": 853,
+   "text": "The Catcher in the Rye deals with issues of war and peace."
+  },
+  {
+   "id": 854,
+   "text": "Catherine Hardwicke is from North America."
+  },
+  {
+   "id": 855,
+   "text": "Java is in Indonesia."
+  },
+  {
+   "id": 856,
+   "text": "Carol Danvers appears in American comic books."
+  },
+  {
+   "id": 857,
+   "text": "The Danish language has speakers in Sweden."
+  },
+  {
+   "id": 858,
+   "text": "Timur was wounded."
+  },
+  {
+   "id": 859,
+   "text": "No Way Out is a car."
+  },
+  {
+   "id": 860,
+   "text": "The Nice Guys is an American photography magazine."
+  },
+  {
+   "id": 861,
+   "text": "Lorelai Gilmore's mother was named Kelly Bishop."
+  },
+  {
+   "id": 862,
+   "text": "Numenius lived in at least one place."
+  },
+  {
+   "id": 863,
+   "text": "The New Jersey Turnpike has 13 rest areas."
+  },
+  {
+   "id": 864,
+   "text": "Temple Mount is related to Judaism."
+  },
+  {
+   "id": 865,
+   "text": "William Cohen is a man."
+  },
+  {
+   "id": 866,
+   "text": "Benzodiazepine was globally the least prescribed medication in 1977."
+  },
+  {
+   "id": 867,
+   "text": "Leslie Alexander is incapable of bond trading."
+  },
+  {
+   "id": 868,
+   "text": "Port of Spain is the capital of an island."
+  },
+  {
+   "id": 869,
+   "text": "The Joy of Painting was made by Bob Ross."
+  },
+  {
+   "id": 870,
+   "text": "Computer chips became Virginia's most valuable export in 2002."
+  },
+  {
+   "id": 871,
+   "text": "Louie (season 1) was created by Edward Kitsis."
+  },
+  {
+   "id": 872,
+   "text": "Ann Biderman was denied American citizenship."
+  },
+  {
+   "id": 873,
+   "text": "Pocahontas was not from Virginia."
+  },
+  {
+   "id": 874,
+   "text": "Scream 2 is a film created in the United States."
+  },
+  {
+   "id": 875,
+   "text": "Golf is a two-person sport."
+  },
+  {
+   "id": 876,
+   "text": "The Nice Guys stars Shane Black."
+  },
+  {
+   "id": 877,
+   "text": "Hermit crabs are carnivores."
+  },
+  {
+   "id": 878,
+   "text": "Stephen Moyer refused to ever act in anything."
+  },
+  {
+   "id": 879,
+   "text": "Bonaire was part of the Netherlands Antilles until 2000."
+  },
+  {
+   "id": 880,
+   "text": "The soundtrack of Far from the Madding Crowd was only by a French composer."
+  },
+  {
+   "id": 881,
+   "text": "The Hit is a film."
+  },
+  {
+   "id": 882,
+   "text": "The Alfred P. Murrah Federal Building was located in the geographic center of the Oklahoma City metropolitan station."
+  },
+  {
+   "id": 883,
+   "text": "The Beverly Hillbillies had only one season."
+  },
+  {
+   "id": 884,
+   "text": "Elizabeth I's mother is still alive."
+  },
+  {
+   "id": 885,
+   "text": "Carol Danvers appears only in comic books published by DC."
+  },
+  {
+   "id": 886,
+   "text": "Joni Mitchell released 17 prisoners from federal incarceration."
+  },
+  {
+   "id": 887,
+   "text": "The New England Patriots lost five Super Bowls."
+  },
+  {
+   "id": 888,
+   "text": "Baloch people are rarely an Iranic people."
+  },
+  {
+   "id": 889,
+   "text": "Google Search shows home listings for every property within the user's zip code."
+  },
+  {
+   "id": 890,
+   "text": "Exit the King is a thriller."
+  },
+  {
+   "id": 891,
+   "text": "Manchester United's current name is the Newton Heath LYR Football Club."
+  },
+  {
+   "id": 892,
+   "text": "Dulquer Salmaan received a Filmfare Award nomination for Best Actor."
+  },
+  {
+   "id": 893,
+   "text": "Woodrow Wilson played music in a basement."
+  },
+  {
+   "id": 894,
+   "text": "P.S I Love You (film) was profitable in 2007."
+  },
+  {
+   "id": 895,
+   "text": "Konidela Production Company was established by a Russian novelist."
+  },
+  {
+   "id": 896,
+   "text": "Elizabeth of York was the cousin of Richard III."
+  },
+  {
+   "id": 897,
+   "text": "Exit the King is a drama."
+  },
+  {
+   "id": 898,
+   "text": "Kevin Bacon was in a 1996 film along with Burt Reynolds."
+  },
+  {
+   "id": 899,
+   "text": "L. Ron Hubbard died in 1996."
+  },
+  {
+   "id": 900,
+   "text": "Atlanta metropolitan area is located in north Georgia."
+  },
+  {
+   "id": 901,
+   "text": "Peru remains a member of the Group of 15 to this day."
+  },
+  {
+   "id": 902,
+   "text": "Pocahontas was from the state of Virginia."
+  },
+  {
+   "id": 903,
+   "text": "The Romani people have nationalized."
+  },
+  {
+   "id": 904,
+   "text": "David Attenborough served as controller of BBC Two in 1970."
+  },
+  {
+   "id": 905,
+   "text": "American Sniper (book) takes place in Iraq."
+  },
+  {
+   "id": 906,
+   "text": "ASAP Rocky is only a music video actor."
+  },
+  {
+   "id": 907,
+   "text": "Raja Hindustani is a Russian language film."
+  },
+  {
+   "id": 908,
+   "text": "The Blue Dog Coalition was formed in 1997."
+  },
+  {
+   "id": 909,
+   "text": "Estelle Getty was an American."
+  },
+  {
+   "id": 910,
+   "text": "Mercedes-Benz is not an automobile manufacturer."
+  },
+  {
+   "id": 911,
+   "text": "Death Note is a Japanese television series based on a manga series published by Tsugumi Ohba."
+  },
+  {
+   "id": 912,
+   "text": "Anna Nicole Smith was a model for Guess."
+  },
+  {
+   "id": 913,
+   "text": "Johann Wolfgang von Goethe published Hermann and Dorothea."
+  },
+  {
+   "id": 914,
+   "text": "In the country Germany, Blank Space is on a top 10 list."
+  },
+  {
+   "id": 915,
+   "text": "Keith Stanfield rapped in Straight Outta Compton."
+  },
+  {
+   "id": 916,
+   "text": "Florida State University was designated as a \"preeminent\" state university in the spring of 2013."
+  },
+  {
+   "id": 917,
+   "text": "Antigua is also known as Hawaii."
+  },
+  {
+   "id": 918,
+   "text": "The Hunger Games are not based on a novel."
+  },
+  {
+   "id": 919,
+   "text": "Matt Bomer has a middle name."
+  },
+  {
+   "id": 920,
+   "text": "John DiMaggio has had roles on multiple shows."
+  },
+  {
+   "id": 921,
+   "text": "Parkinson's disease has afflicted Mike Tyson."
+  },
+  {
+   "id": 922,
+   "text": "Guns N' Roses formed in Nevada."
+  },
+  {
+   "id": 923,
+   "text": "UNESCO's City of Literature program aims to promote the social, economic and cultural development of cities in both the developed and the developing world."
+  },
+  {
+   "id": 924,
+   "text": "Jenny McCarthy modeled for Playboy magazine in 1990."
+  },
+  {
+   "id": 925,
+   "text": "Cyprus is a destination for American tourists."
+  },
+  {
+   "id": 926,
+   "text": "Aphrodite is unmarried."
+  },
+  {
+   "id": 927,
+   "text": "Grease had a soundtrack which is remembered today."
+  },
+  {
+   "id": 928,
+   "text": "Jiang Wen is a Chinese cuisine."
+  },
+  {
+   "id": 929,
+   "text": "Minor League Baseball provides opportunities for river development."
+  },
+  {
+   "id": 930,
+   "text": "Samsung entered the electronics industry in the late 1970s."
+  },
+  {
+   "id": 931,
+   "text": "Team Fortress 2 development was led by Robin Walker."
+  },
+  {
+   "id": 932,
+   "text": "The Baja 1000 had Mickey Thompson as a news correspondent."
+  },
+  {
+   "id": 933,
+   "text": "Mike Friedrich is a fantasy comic book writer."
+  },
+  {
+   "id": 934,
+   "text": "Carey Hayes was born in Maine."
+  },
+  {
+   "id": 935,
+   "text": "Azithromycin is sold."
+  },
+  {
+   "id": 936,
+   "text": "Team Fortress 2 development required a large budget."
+  },
+  {
+   "id": 937,
+   "text": "Faye Resnick is an architect."
+  },
+  {
+   "id": 938,
+   "text": "In states still using the electric chair to execute people, the prisoner is allowed the choice of lethal dribbling as an alternative method."
+  },
+  {
+   "id": 939,
+   "text": "Jab Tak Hai Jaan was praised for at least one of its cinematic qualities."
+  },
+  {
+   "id": 940,
+   "text": "Freddie Highmore is a Brazilian."
+  },
+  {
+   "id": 941,
+   "text": "Ned Stark's cast was nominated for an Academy Award."
+  },
+  {
+   "id": 942,
+   "text": "Scream was unremarkable."
+  },
+  {
+   "id": 943,
+   "text": "Jeb Bush is former Prime Minister George H. W. Bush's son."
+  },
+  {
+   "id": 944,
+   "text": "Ed Gagliardi battled cancer for two years."
+  },
+  {
+   "id": 945,
+   "text": "Linkin Park hit the Billboard Top 200 for the first time in 2007."
+  },
+  {
+   "id": 946,
+   "text": "Issa Rae stars in Awkward Black Girl."
+  },
+  {
+   "id": 947,
+   "text": "Sejong the Great was born in April of 1397."
+  },
+  {
+   "id": 948,
+   "text": "Petyr Baelish is nicknamed Littlefinger by George R.R. Martin."
+  },
+  {
+   "id": 949,
+   "text": "Pakistan's semi-industrialized economy is the 25th largest in the world in purchasing power parity."
+  },
+  {
+   "id": 950,
+   "text": "B. R. Ambedkar was alive in 1990."
+  },
+  {
+   "id": 951,
+   "text": "Georges Gilles de la Tourette described literature."
+  },
+  {
+   "id": 952,
+   "text": "Live Nation Entertainment formed from the merger of Live Nation and Ticketmaster."
+  },
+  {
+   "id": 953,
+   "text": "One possible cause of Dissociative identity disorder (DID) is disruptions in memory caused by psychological trauma."
+  },
+  {
+   "id": 954,
+   "text": "Scandinavia does not contain Greenland."
+  },
+  {
+   "id": 955,
+   "text": "Bank of America has 4,600 retail financial employees."
+  },
+  {
+   "id": 956,
+   "text": "Species distribution can be understood through many factors except variation of sea levels."
+  },
+  {
+   "id": 957,
+   "text": "Cambridgeshire is ungoverned."
+  },
+  {
+   "id": 958,
+   "text": "Leslie Alexander owns a house."
+  },
+  {
+   "id": 959,
+   "text": "The Beguiled is based on a novel set in 2011."
+  },
+  {
+   "id": 960,
+   "text": "Ron Dennis owns Cypress Catering Company."
+  },
+  {
+   "id": 961,
+   "text": "Simon Cowell is a reality television judge from Canada."
+  },
+  {
+   "id": 962,
+   "text": "Hair (musical) was revived on Broadway in 2013."
+  },
+  {
+   "id": 963,
+   "text": "Talulah Riley appeared in Planet of the Apes."
+  },
+  {
+   "id": 964,
+   "text": "Ayananka Bose is a Gemini."
+  },
+  {
+   "id": 965,
+   "text": "Salman Rushdie won the Booker Prize in 1981."
+  },
+  {
+   "id": 966,
+   "text": "Baadshah was dubbed into Korean."
+  },
+  {
+   "id": 967,
+   "text": "Sacre-Coeur, Paris is an embodiment of conservative moral order."
+  },
+  {
+   "id": 968,
+   "text": "Elizabeth Olsen is an actress."
+  },
+  {
+   "id": 969,
+   "text": "Honeymoon is a major-label record by Lana Del Rey."
+  },
+  {
+   "id": 970,
+   "text": "Stomp the Yard is a clothing brand."
+  },
+  {
+   "id": 971,
+   "text": "SpongeBob SquarePants is a series."
+  },
+  {
+   "id": 972,
+   "text": "Castlevania came out in Japan in September 1986."
+  },
+  {
+   "id": 973,
+   "text": "Leslie Alexander is from the state of New Jersey."
+  },
+  {
+   "id": 974,
+   "text": "The KGB was not a military service."
+  },
+  {
+   "id": 975,
+   "text": "Eurotas (river) is in Italy."
+  },
+  {
+   "id": 976,
+   "text": "Arthur Schopenhauer died in the 1800's."
+  },
+  {
+   "id": 977,
+   "text": "The Hunger Games are series of three films."
+  },
+  {
+   "id": 978,
+   "text": "Goldie Hawn received a presidential nomination."
+  },
+  {
+   "id": 979,
+   "text": "Ghost is a film."
+  },
+  {
+   "id": 980,
+   "text": "The Guthrie Theater's first building stopped operating in April 2006."
+  },
+  {
+   "id": 981,
+   "text": "Azithromycin is available as a generic curtain."
+  },
+  {
+   "id": 982,
+   "text": "One of Macklemore's children was born in Texas in May."
+  },
+  {
+   "id": 983,
+   "text": "PBS is Western."
+  },
+  {
+   "id": 984,
+   "text": "The Nobel Prize in Chemistry was awarded in every year but 1901."
+  },
+  {
+   "id": 985,
+   "text": "Simon Cowell burns down charities."
+  },
+  {
+   "id": 986,
+   "text": "Matthew Vaughn is a dancer and writer."
+  },
+  {
+   "id": 987,
+   "text": "See You on the Other Side was certified crap in March 2006."
+  },
+  {
+   "id": 988,
+   "text": "Olympus Mons is on Mars."
+  },
+  {
+   "id": 989,
+   "text": "Granite is a solid."
+  },
+  {
+   "id": 990,
+   "text": "There is a carnival called Camp Flog Gnaw."
+  },
+  {
+   "id": 991,
+   "text": "Sarah Hyland started acting in 2001."
+  },
+  {
+   "id": 992,
+   "text": "Tennessee is a state in the United States."
+  },
+  {
+   "id": 993,
+   "text": "One True Thing was made after 2000."
+  },
+  {
+   "id": 994,
+   "text": "Temple of the Dog never celebrated the 25th anniversary of their self-titled album."
+  },
+  {
+   "id": 995,
+   "text": "Samsung has developed and marketed computers."
+  },
+  {
+   "id": 996,
+   "text": "Uganda is in space."
+  },
+  {
+   "id": 997,
+   "text": "Argentina does not have a Congress."
+  },
+  {
+   "id": 998,
+   "text": "Padua is located within Italy."
+  },
+  {
+   "id": 999,
+   "text": "David Lloyd George was voted the worst British prime minister of the 20th century."
+  }
+ ],
+ "ops": [
+  {
+   "op": "sem_filter",
+   "args": {
+    "prompt": "Decide whether this claim is likely true based on general knowledge.\n\nReply with only the word true or false.",
+    "max_tokens": 8
+   }
+  },
+  {
+   "op": "sem_map",
+   "args": {
+    "prompt": "Name the main subject of the claim in at most five words.",
+    "max_tokens": 16
+   }
+  },
+  {
+   "op": "sem_map",
+   "args": {
+    "prompt": "Rewrite the claim as a yes or no question.",
+    "max_tokens": 32
+   }
+  }
+ ]
+}
