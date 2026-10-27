@@ -5,6 +5,7 @@ from typing import Any
 
 from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.context import RETRY_TASK, RetryTaskResult
+from vllm.kalypso.instrumentation import request_meta
 from vllm.kalypso.sem_ops import OpBehavior, ops
 
 
@@ -181,10 +182,16 @@ class Stage:
                     if idx == task.op_index and task.retry_priority is not None
                     else -(self.priority_offset + idx)
                 )
-                keep_going = await op(
-                    task.ctx,
-                    priority=priority,
-                )
+                with request_meta(
+                    stage=self.stage_id,
+                    operator=type(op).__name__,
+                    position=op.position,
+                    row_idx=task.ctx.state.idx,
+                ):
+                    keep_going = await op(
+                        task.ctx,
+                        priority=priority,
+                    )
                 if keep_going is RETRY_TASK:
                     return RetryTaskResult(
                         ctx=task.ctx,

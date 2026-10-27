@@ -45,6 +45,9 @@ class ExecutionState:
     stage_id: int = -1
     retry_op_position: int = -1
     retry_max_tokens: int = 0
+    # Worker this row is assigned to. Set once at first admission, then reused
+    # for every follow-up call (retries, later operators) so the row stays put.
+    worker: Any = None
 
 
 @dataclass

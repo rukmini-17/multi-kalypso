@@ -1,0 +1,42 @@
+{
+  "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+  "text_column": "text",
+  "records": [
+    {"id": 1, "text": "Your outfit looks amazing in this photo!"},
+    {"id": 2, "text": "Love the color you picked for that jacket."},
+    {"id": 3, "text": "You look so confident here, great pic."},
+    {"id": 4, "text": "Wow you got fat since your last post."},
+    {"id": 5, "text": "Sending this to my stylist for inspo."},
+    {"id": 6, "text": "Honestly you look huge in that dress."},
+    {"id": 7, "text": "Your smile totally made my day."},
+    {"id": 8, "text": "Did you gain like fifty pounds?"},
+    {"id": 9, "text": "Where did you get those shoes?"},
+    {"id": 10, "text": "This angle is really flattering on you."},
+    {"id": 11, "text": "No offense but you look bloated."},
+    {"id": 12, "text": "Congrats on the new job, you deserve it!"},
+    {"id": 13, "text": "The lighting in this shot is perfect."},
+    {"id": 14, "text": "Maybe skip tight clothes until you lose weight."},
+    {"id": 15, "text": "Your hair looks great like that."},
+    {"id": 16, "text": "So happy for you and your family."},
+    {"id": 17, "text": "Following for more content like this."},
+    {"id": 18, "text": "That cafe in the background looks fun."},
+    {"id": 19, "text": "You always post the best travel tips."},
+    {"id": 20, "text": "Have a wonderful weekend!"}
+  ],
+  "ops": [
+    {
+      "op": "sem_filter",
+      "args": {
+        "prompt": "You are moderating comments on a social media post.\n\nDecide whether the comment is acceptable to keep visible: friendly, neutral,\nor constructive praise. Answer false if the comment is insulting, harassing,\nbody-shaming, or otherwise clearly negative toward the person in the post.\n\nReply with only the word true or false.",
+        "max_tokens": 8
+      }
+    },
+    {
+      "op": "sem_map",
+      "args": {
+        "prompt": "Summarize the topic of the comment in at most five words.",
+        "max_tokens": 16
+      }
+    }
+  ]
+}

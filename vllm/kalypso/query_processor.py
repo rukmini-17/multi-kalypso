@@ -47,6 +47,9 @@ class QueryProcessor:
         budget,
         virtual_pinning: bool = True,
         blocking: bool = False,
+        pool=None,
+        policy=None,
+
     ):
         self.model_name = model_name
         self.virtual_pinning = virtual_pinning
@@ -57,6 +60,8 @@ class QueryProcessor:
         self._last_unpin_at = 0.0
         self._consecutive_stuck_checks = 0
         self._consecutive_timeout_checks = 0
+        self.pool = pool
+        self.policy = policy
 
     @classmethod
     def _kv_metric_snapshot(cls) -> dict[str, float]:
@@ -85,6 +90,10 @@ class QueryProcessor:
             all(name in found for name in cls._LLM_WORK_METRICS.values())
         )
         return snapshot
+
+    async def _query_kv_snapshot(self) -> dict[str, float]:
+        """Allow remote coordinators to refresh metrics before each snapshot."""
+        return self._kv_metric_snapshot()
 
     @staticmethod
     def _query_kv_delta(
@@ -174,11 +183,14 @@ class QueryProcessor:
             self.executor,
             virtual_pinning=self.virtual_pinning,
             blocking=effective_blocking,
+            pool=self.pool,
+            policy=self.policy,
+
         )
         owner_key = str(id(raw_request))
         query_id = f"query-{uuid4().hex}"
         started_at = monotonic()
-        kv_before = self._kv_metric_snapshot()
+        kv_before = await self._query_kv_snapshot()
         # Each query registers its own stages; drop those of earlier queries so
         # they neither hold capacity nor act as donors/receivers.
         KVMemoryManager.get_instance().reset_stages()
@@ -189,7 +201,7 @@ class QueryProcessor:
             if self.LOG_QUERY_KV_STATS:
                 stats = self._query_kv_delta(
                     kv_before,
-                    self._kv_metric_snapshot(),
+                    await self._query_kv_snapshot(),
                 )
                 stats.update({
                     "query_id": query_id,

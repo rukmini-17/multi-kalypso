@@ -20,6 +20,7 @@ from vllm.kalypso.context import (
 )
 from vllm.kalypso.budget import KVMemoryManager
 from vllm.kalypso.controller.map_estimator import MapRatioEstimator
+from vllm.kalypso.execution.determinism import Choice
 from vllm.kalypso.execution.pipeline_execution import BlockingExecutor
 
 
@@ -33,6 +34,7 @@ class SemClassify(BaseOp):
             predicate=predicate,
         )
         self.classes = list(classes)
+        self.determinism = Choice(self.classes)
         self.pin = pin
         self.unpin = unpin
         self.max_tokens = max(KVMemoryManager.get_instance().token_length(g) for g in self.classes) + 1
@@ -77,6 +79,7 @@ class SemClassify(BaseOp):
                 max_tokens=self.max_tokens,
                 pin=False,
                 priority=priority,
+                determinism=self.determinism,
         )
         group_output = output.text.strip().lower()
         group = ""
