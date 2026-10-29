@@ -41,3 +41,13 @@ An existing `src_old` must be a clean worktree at the same commit; an explicitly
 The script prints both commits, stops and waits for the old server before starting the new side, and cleans up servers on exit.
 Results are saved as `old.json`, `new.json`, their input CSVs, `old_server.log`, and `new_run/` with request records and logs; the exit status comes from harness `check` using old as baseline.
 Use `--help` for payload, model, port, and output options; relative paths resolve from this checkout's root.
+
+## Compare with real inference on Modal
+
+Run `modal run vllm/kalypso/benchmark/modal_old_vs_new.py --payload vllm/kalypso/benchmark/sample_data/fever_people_1000.json` to run `gpu_old_vs_new.sh` in one Modal container with two A10G GPUs.
+Install the client with `pip install modal` and log in once with `modal token new` first.
+The old side defaults to `05024f027` and the new side to `HEAD`; pass `--old-ref` and `--new-ref` for other commits, which are sent as `git archive` snapshots, so uncommitted edits are not included.
+`gpu_old_vs_new.sh`, `row_diff.py`, and `correctness_harness.py` are taken from the working tree.
+The image installs the precompiled vLLM wheel for the fork's upstream base, `2c0ee0fde`, and adds its compiled files to both checkouts in place of a source build.
+Model weights are cached in the `kalypso-hf-cache` Modal volume, so only the first run downloads them.
+Results, logs, and `row_diff.md` are saved to `kalypso_modal_run/<timestamp>/` (or `--out DIR`), and the exit status comes from `correctness_harness.py check`.
