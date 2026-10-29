@@ -44,7 +44,7 @@ Use `--help` for payload, model, port, and output options; relative paths resolv
 
 ## Compare with real inference on Modal
 
-Run `modal run vllm/kalypso/benchmark/modal_old_vs_new.py --payload vllm/kalypso/benchmark/sample_data/fever_people_1000.json` to run `gpu_old_vs_new.sh` in one Modal container with two L4 GPUs.
+Run `modal run vllm/kalypso/benchmark/modal_old_vs_new.py --payload vllm/kalypso/benchmark/sample_data/fever_people_1000.json` to run `gpu_old_vs_new.sh` in one Modal container with two A10G GPUs.
 Install the client with `pip install modal` and log in once with `modal token new` first.
 The old side defaults to `05024f027` and the new side to `HEAD`; pass `--old-ref` and `--new-ref` for other commits, which are sent as `git archive` snapshots, so uncommitted edits are not included.
 `gpu_old_vs_new.sh`, `row_diff.py`, and `correctness_harness.py` are taken from the working tree.

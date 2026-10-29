@@ -1,4 +1,4 @@
-"""Run gpu_old_vs_new.sh in one Modal container with two L4 GPUs.
+"""Run gpu_old_vs_new.sh in one Modal container with two A10G GPUs.
 
     modal run vllm/kalypso/benchmark/modal_old_vs_new.py \
         --payload vllm/kalypso/benchmark/sample_data/fever_people_1000.json
@@ -93,7 +93,7 @@ def build_repo(sources, site, repo):
         git(repo, "tag", tag)
 
 
-@app.function(gpu="L4:2", timeout=3 * 3600, volumes={"/cache": hf_cache})
+@app.function(gpu="A10G:2", timeout=3 * 3600, volumes={"/cache": hf_cache})
 def run(
     old_tar, new_tar, runner, payload, commits, model, policy, max_model_len, gpu_util
 ):
