@@ -41,3 +41,15 @@ An existing `src_old` must be a clean worktree at the same commit; an explicitly
 The script prints both commits, stops and waits for the old server before starting the new side, and cleans up servers on exit.
 Results are saved as `old.json`, `new.json`, their input CSVs, `old_server.log`, and `new_run/` with request records and logs; the exit status comes from harness `check` using old as baseline.
 Use `--help` for payload, model, port, and output options; relative paths resolve from this checkout's root.
+
+## Compare without an inference engine
+
+Run `vllm/kalypso/benchmark/skip_inference_old_vs_new.sh -n 2` to compare old Kalypso against this checkout's coordinator with seeded replies and `KALYPSO_SKIP_INFERENCE=1`.
+The existing correctness harness checks output uniqueness, row mapping, operator-value agreement with the old oracle, and recorded call uniqueness and row coverage.
+The check compares final operator values, so a bug that changes prompts only shows when the seeded reply changes; filter replies are two-valued, while map replies are text hashes.
+Request fields such as `max_tokens` and `priority` are not compared.
+The old query processor and discovery-only workers need no vLLM engine, model weights, or compiled vLLM; only the model tokenizer/config is downloaded.
+The `kalypso-skip-inference.yml` GitHub Actions workflow runs this check on pull requests with 2 and 4 workers under round robin, on the 20-row sample and 1000 FEVER claims (filter, map, map).
+Least-outstanding routing is not in CI: skipped calls finish instantly, so every call goes to the first worker.
+Results and logs are saved in `./kalypso_skip_old_vs_new` locally and uploaded as CI artifacts.
+This check does not cover real inference or engine-side behavior; use `compare_old_new.sh` or `gpu_old_vs_new.sh` for that coverage.

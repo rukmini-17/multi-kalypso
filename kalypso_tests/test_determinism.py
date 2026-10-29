@@ -60,7 +60,9 @@ def test_strategy_rejects_empty_space(strategy):
         strategy()
 
 
-def test_pin_call_reply_is_left_alone(monkeypatch):
+@pytest.mark.parametrize("skip", ["0", "1"])
+def test_pin_call_reply_is_left_alone(monkeypatch, skip):
+    monkeypatch.setenv("KALYPSO_SKIP_INFERENCE", skip)
     monkeypatch.setenv("KALYPSO_COIN_FLIP_SEED", "3")
     executor = VLLMExecutor("model")
     original = CompletionResult("x", "pin-1", "length")
@@ -70,8 +72,49 @@ def test_pin_call_reply_is_left_alone(monkeypatch):
 
 
 @pytest.mark.parametrize("prompt", ["hello", [{"role": "user", "content": "hello"}]])
+@pytest.mark.parametrize("strategy", [BOOLEAN, Bucket(), Text(), Choice(["red", "blue"])])
+def test_skip_matches_inference_without_calling_model(monkeypatch, prompt, strategy):
+    monkeypatch.setenv("KALYPSO_COIN_FLIP_SEED", "1")
+    monkeypatch.delenv("KALYPSO_SKIP_INFERENCE", raising=False)
+    executor = VLLMExecutor("model")
+    backend = AsyncMock(return_value=CompletionResult("real reply", "req-1", "length"))
+    monkeypatch.setattr(executor, "complete", backend)
+    monkeypatch.setattr(executor, "chatcomplete", backend)
+    expected = asyncio.run(executor.execute(None, prompt, 8, determinism=strategy))
+    backend.reset_mock()
+    monkeypatch.setenv("KALYPSO_SKIP_INFERENCE", "1")
+    result = asyncio.run(executor.execute(None, prompt, 8, determinism=strategy))
+    backend.assert_not_called()
+    assert (result.text, result.finish_reason) == (expected.text, "stop")
+    assert result.request_id.startswith("seeded-")
+    assert result.request_id != asyncio.run(
+        executor.execute(None, prompt, 8, determinism=strategy)
+    ).request_id
+    if prompt == "hello" and isinstance(strategy, Text):
+        assert result.text == "79057cc0"
+
+
+@pytest.mark.parametrize("seed", [None, ""])
+def test_skip_without_seed_raises_before_model_call(monkeypatch, seed):
+    monkeypatch.setenv("KALYPSO_SKIP_INFERENCE", "1")
+    monkeypatch.delenv("KALYPSO_COIN_FLIP_SEED", raising=False)
+    if seed is not None:
+        monkeypatch.setenv("KALYPSO_COIN_FLIP_SEED", seed)
+    executor = VLLMExecutor("model")
+    backend = AsyncMock()
+    monkeypatch.setattr(executor, "complete", backend)
+    with pytest.raises(RuntimeError, match="KALYPSO_COIN_FLIP_SEED"):
+        asyncio.run(executor.execute(None, "hello", 8, determinism=BOOLEAN))
+    backend.assert_not_called()
+
+
+@pytest.mark.parametrize("prompt", ["hello", [{"role": "user", "content": "hello"}]])
 @pytest.mark.parametrize("seed", [None, "", "3"])
-def test_execute_still_calls_backend(monkeypatch, prompt, seed):
+@pytest.mark.parametrize("skip", [None, "0", "true"])
+def test_execute_still_calls_backend(monkeypatch, prompt, seed, skip):
+    monkeypatch.delenv("KALYPSO_SKIP_INFERENCE", raising=False)
+    if skip is not None:
+        monkeypatch.setenv("KALYPSO_SKIP_INFERENCE", skip)
     if seed is None:
         monkeypatch.delenv("KALYPSO_COIN_FLIP_SEED", raising=False)
     else:

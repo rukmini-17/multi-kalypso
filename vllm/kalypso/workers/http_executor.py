@@ -14,8 +14,13 @@ Pinning and abort are not supported.
 import asyncio
 import json
 import time
+from uuid import uuid4
 
-from vllm.kalypso.execution.determinism import Determinism, apply_determinism
+from vllm.kalypso.execution.determinism import (
+    Determinism,
+    apply_determinism,
+    skip_inference,
+)
 from vllm.kalypso.execution.executor import LLMExecutor, CompletionResult
 from vllm.kalypso.instrumentation import RequestRecorder, current_request_meta
 
@@ -118,6 +123,10 @@ class HttpVLLMExecutor(LLMExecutor):
         submit_t = clock()
         status, error, data, finish_reason = "ok", None, None, None
         try:
+            if skip_inference():
+                data = {"id": f"seeded-{uuid4().hex}"}
+                finish_reason = "stop"
+                return CompletionResult("", data["id"], finish_reason)
             data = await self._post(path, payload)
             choice = data["choices"][0]
             request_id = data["id"]
