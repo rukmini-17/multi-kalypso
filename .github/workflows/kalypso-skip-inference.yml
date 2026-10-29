@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        payload: [filter_map_20.json, fever_filter_map_map_1000.json]
+        payload: [filter_map_20.json, fever_filter_map_map_1000.json, fever_filter_join_filter_agg_1000.json]
         workers: [2, 4]
         policy: [round_robin]
     env:
