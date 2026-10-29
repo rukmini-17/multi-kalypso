@@ -2,6 +2,8 @@
 
 import argparse
 import asyncio
+import hashlib
+import json
 import sys
 import uuid
 from contextlib import asynccontextmanager
@@ -10,6 +12,43 @@ from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import PlainTextResponse
+
+
+def trace_calls(executor_class, path):
+    """Observe the real executor without changing prompts, replies, or routing."""
+    execute = executor_class.execute
+    Path(path).write_text("")
+
+    async def traced(
+        self, raw_request, prompt, max_tokens, pin=False, priority=0, determinism=None
+    ):
+        canonical = (
+            prompt if isinstance(prompt, str) else json.dumps(prompt, sort_keys=True)
+        )
+        result = await execute(
+            self,
+            raw_request=raw_request,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            pin=pin,
+            priority=priority,
+            determinism=determinism,
+        )
+        with Path(path).open("a", encoding="utf-8") as stream:
+            stream.write(
+                json.dumps(
+                    {
+                        "request_id": result.request_id,
+                        "prompt_sha256": hashlib.sha256(canonical.encode()).hexdigest(),
+                        "reply": result.text,
+                        "pin": pin,
+                    }
+                )
+                + "\n"
+            )
+        return result
+
+    executor_class.execute = traced
 
 
 def build_app(args) -> FastAPI:
@@ -28,8 +67,11 @@ def build_app(args) -> FastAPI:
         if not skip_inference():
             raise RuntimeError("Stand-ins require KALYPSO_SKIP_INFERENCE=1 and a seed")
         if args.command == "old":
+            from vllm.kalypso.execution.vllm_executor import VLLMExecutor
             from vllm.kalypso.query_processor import QueryProcessor
 
+            if args.call_record_path:
+                trace_calls(VLLMExecutor, args.call_record_path)
             app.state.query_processor = QueryProcessor(args.model, args.budget)
         yield
 
@@ -110,11 +152,24 @@ if __name__ == "__main__":
     # File execution must not let benchmark modules shadow standard imports.
     if sys.path and Path(sys.path[0]).resolve() == Path(__file__).resolve().parent:
         sys.path.pop(0)
+    if sys.argv[1:2] == ["coordinator"]:
+        from vllm.kalypso import server
+        from vllm.kalypso.workers.http_executor import HttpVLLMExecutor
+
+        # Consume only the observer option; the real coordinator parses the rest.
+        observer = argparse.ArgumentParser(add_help=False)
+        observer.add_argument("--call-record-path", required=True)
+        args, remaining = observer.parse_known_args(sys.argv[2:])
+        trace_calls(HttpVLLMExecutor, args.call_record_path)
+        sys.argv[1:] = remaining
+        server.main()
+        raise SystemExit(0)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("old", "worker"))
     parser.add_argument("--port", type=int, required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--budget", type=int, required=True)
     parser.add_argument("--expect-root", required=True)
+    parser.add_argument("--call-record-path")
     args = parser.parse_args()
     uvicorn.run(build_app(args), host="127.0.0.1", port=args.port)

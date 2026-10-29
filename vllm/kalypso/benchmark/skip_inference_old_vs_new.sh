@@ -160,7 +160,8 @@ echo "Running old stand-in on port $base"
     cd "$old"
     export PYTHONPATH="$old"
     exec "$python" "$standins" old --port "$base" --model "$model" \
-        --budget "$((n * worker_budget))" --expect-root "$old"
+        --budget "$((n * worker_budget))" --expect-root "$old" \
+        --call-record-path "$out/old_calls.jsonl"
 ) > "$out/old_server.log" 2>&1 < /dev/null &
 pids=$!
 ready "http://127.0.0.1:$base/v1/semantic/healthz" "$out/old_server.log" "$pids"
@@ -186,8 +187,9 @@ done
 ensure_port_free "$((base + 1))"
 : > "$out/requests.jsonl"
 echo "Running new coordinator with $n workers and policy $policy"
-"$python" -m vllm.kalypso.server --host 127.0.0.1 --port "$((base + 1))" \
+"$python" "$standins" coordinator --host 127.0.0.1 --port "$((base + 1))" \
     --workers "$urls" --policy "$policy" --record-path "$out/requests.jsonl" \
+    --call-record-path "$out/new_calls.jsonl" \
     > "$out/coordinator.log" 2>&1 < /dev/null &
 pid=$!; pids="$pids $pid"
 ready "http://127.0.0.1:$((base + 1))/v1/semantic/healthz" "$out/coordinator.log" "$pid"
@@ -195,6 +197,10 @@ ready "http://127.0.0.1:$((base + 1))/v1/semantic/healthz" "$out/coordinator.log
     --endpoint "http://127.0.0.1:$((base + 1))/v1/semantic/query" --out "$out/new.json"
 stop_all
 
-# Compare outputs and recorded calls with the existing harness, preserving its exit status.
+# Check every oracle prompt/reply and recorded call, plus round-robin assignment.
+routing=()
+[[ "$policy" != round_robin ]] || routing=(--round-robin-workers "$n")
 "$python" "$harness" check --payload "$payload" --baseline "$out/old.json" \
-    --candidate "$out/new.json" --records "$out/requests.jsonl"
+    --candidate "$out/new.json" --records "$out/requests.jsonl" \
+    --baseline-calls "$out/old_calls.jsonl" --candidate-calls "$out/new_calls.jsonl" \
+    ${routing[@]+"${routing[@]}"}
