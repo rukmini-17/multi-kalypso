@@ -1,10 +1,10 @@
-import ast
 import csv
 from pathlib import Path
 
 import pytest
 
 from benchmark_multi_kalypso import plans
+from vllm.kalypso.benchmark import scenarios
 
 
 def test_fever_wire_body_is_blocking_filter_map_agg(tmp_path):
@@ -46,22 +46,45 @@ def test_fever_wire_body_is_blocking_filter_map_agg(tmp_path):
     assert plan.rows == 2
 
 
-def test_upstream_prompts_are_loaded_at_runtime(tmp_path, monkeypatch):
-    source = tmp_path / "scenarios.py"
-    source.write_text(
-        'MEDEC_ERROR_FILTER = "filter from upstream"\n'
-        'MEDEC_ERROR_SENTENCE_ID_MAP = "find ID"\n'
-        'MEDEC_CORRECTED_SENTENCE_MAP = "correct sentence"\n'
-    )
-    monkeypatch.setattr(plans, "SCENARIOS", source)
-    plan = plans.build_plan("medec")
-    assert plan.ops == [
-        {"op": "sem_filter", "args": {"prompt": "filter from upstream"}},
-        {"op": "sem_map", "args": {"prompt": "find ID"}},
-        {"op": "sem_map", "args": {"prompt": "correct sentence"}},
-    ]
-    source.write_text(source.read_text().replace("find ID", "updated ID prompt"))
-    assert plans.build_plan("medec").ops[1]["args"]["prompt"] == "updated ID prompt"
+@pytest.mark.parametrize(
+    "name,ops,blocking",
+    [
+        (
+            "fever",
+            [
+                ("sem_filter", {"prompt"}),
+                ("sem_map", {"prompt"}),
+                ("sem_agg", {"instruction"}),
+            ],
+            True,
+        ),
+        (
+            "medec",
+            [
+                ("sem_filter", {"prompt"}),
+                ("sem_map", {"prompt"}),
+                ("sem_map", {"prompt"}),
+            ],
+            False,
+        ),
+        (
+            "contract_nli",
+            [
+                ("sem_filter", {"prompt"}),
+                ("join", {"instruction", "right_table"}),
+                ("sem_map", {"prompt"}),
+            ],
+            False,
+        ),
+    ],
+)
+def test_request_bodies_keep_previous_wire_shapes(tmp_path, name, ops, blocking):
+    body = plans.to_request(plans.build_plan(name), tmp_path / "input.csv", None)
+    assert set(body) == {"ops", "data_path", "blocking"}
+    assert [(op["op"], set(op["args"])) for op in body["ops"]] == ops
+    assert all(set(op) == {"op", "args"} for op in body["ops"])
+    assert body["data_path"] == str(tmp_path / "input.csv")
+    assert body["blocking"] is blocking
 
 
 @pytest.mark.parametrize(
@@ -88,16 +111,12 @@ def test_upstream_prompts_are_loaded_at_runtime(tmp_path, monkeypatch):
     ],
 )
 def test_plans_match_actual_scenario_constants(name, names, constants):
-    values = {
-        node.targets[0].id: ast.literal_eval(node.value)
-        for node in ast.parse(plans.SCENARIOS.read_text()).body
-        if isinstance(node, ast.Assign)
-    }
     plan = plans.build_plan(name)
-    assert [o["op"] for o in plan.ops] == names
-    for op, constant in zip(plan.ops, constants):
+    wire_ops = [op.to_wire() for op in plan.ops]
+    assert [o["op"] for o in wire_ops] == names
+    for op, constant in zip(wire_ops, constants):
         assert (
-            op["args"].get("prompt", op["args"].get("instruction")) == values[constant]
+            op["args"].get("prompt", op["args"].get("instruction")) == getattr(scenarios, constant)
         )
         assert "max_tokens" not in op["args"]
     assert not plan.blocking
@@ -106,7 +125,7 @@ def test_plans_match_actual_scenario_constants(name, names, constants):
         body = plans.to_request(plan, plan.data_path, None)
         assert Path(body["ops"][1]["args"]["right_table"]).is_absolute()
         body["ops"][1]["args"]["instruction"] = "changed"
-        assert plan.ops[1]["args"]["instruction"] != "changed"
+        assert plan.ops[1].to_wire()["args"]["instruction"] != "changed"
 
 
 def test_fever_data_has_1000_claims():
@@ -118,14 +137,24 @@ def test_fever_data_has_1000_claims():
     assert all(row["data"] for row in rows)
 
 
-def test_data_root_and_unknown_workload(tmp_path):
-    assert (
-        plans.build_plan("medec", data_root=tmp_path).data_path
-        == tmp_path / "medec.csv"
+@pytest.mark.parametrize(
+    "name,relative,rows",
+    [
+        ("fever", "fever_claims_1000.csv", 500),
+        ("medec", "MEDEC-TrainingSet-1000.csv", 300),
+        ("contract_nli", "contracts", 200),
+    ],
+)
+def test_data_root_is_always_a_folder(tmp_path, name, relative, rows):
+    root = tmp_path / "new.csv"
+    plan = plans.build_plan(name, data_root=root)
+    assert plan.data_path == root / relative
+    assert plan.rows == rows
+    assert plan.tables == (
+        [("hypotheses", root / "hypotheses", 17)] if name == "contract_nli" else []
     )
-    assert (
-        plans.build_plan("contract_nli", data_root=tmp_path).data_path
-        == tmp_path / "contracts"
-    )
+
+
+def test_unknown_workload():
     with pytest.raises(ValueError, match="Unknown workload"):
         plans.build_plan("missing")

@@ -3,8 +3,11 @@ import csv
 import json
 from pathlib import Path
 
+from .plans import WORKLOADS
+
 
 def prepare_medec(source: Path, out: Path) -> Path:
+    out = out / WORKLOADS["medec"].data_path
     out.parent.mkdir(parents=True, exist_ok=True)
     with (
         source.open(newline="", encoding="utf-8-sig") as src,
@@ -55,7 +58,7 @@ def main() -> None:
     )
     parser.add_argument("dataset", choices=["medec", "contract_nli"])
     parser.add_argument("--input", required=True, type=Path)
-    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--out", required=True, type=Path, help="Workload data root")
     args = parser.parse_args()
     convert = prepare_medec if args.dataset == "medec" else prepare_contract_nli
     print(convert(args.input, args.out))

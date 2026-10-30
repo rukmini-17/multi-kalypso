@@ -11,7 +11,8 @@ def test_official_medec_becomes_sample_formatted_data_column(tmp_path):
     source.write_text(
         'Text ID,Text,Sentences,Error Flag\nnote-1,"A note, with commas.",0 A note.,1\n'
     )
-    target = prepare_medec(source, tmp_path / "medec.csv")
+    target = prepare_medec(source, tmp_path / "medec")
+    assert target == tmp_path / "medec/MEDEC-TrainingSet-1000.csv"
     with target.open(newline="") as stream:
         assert list(csv.DictReader(stream)) == [
             {
@@ -56,7 +57,7 @@ def test_medec_conversion_matches_repo_sample_exactly(tmp_path):
     from benchmark_multi_kalypso.plans import SAMPLE_DATA
 
     source = SAMPLE_DATA / "MEDEC-TrainingSet-1000.csv"
-    target = prepare_medec(source, tmp_path / "medec.csv")
+    target = prepare_medec(source, tmp_path / "medec")
     with source.open(newline="") as src, target.open(newline="") as dst:
         assert [r["data"] for r in csv.DictReader(dst)] == [
             r["data"] for r in csv.DictReader(src)

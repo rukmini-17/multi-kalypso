@@ -58,12 +58,13 @@ The repository's MEDEC and ContractNLI samples contain only 10 inputs, and Contr
 Download the official datasets yourself; the converters perform no network requests.
 
 ```bash
-python -m benchmark_multi_kalypso.prepare_data medec --input /path/to/official.csv --out benchmark_multi_kalypso/data/medec/medec.csv
+python -m benchmark_multi_kalypso.prepare_data medec --input /path/to/official.csv --out benchmark_multi_kalypso/data/medec
 python -m benchmark_multi_kalypso.prepare_data contract_nli --input /path/to/train.json --out benchmark_multi_kalypso/data/contract_nli
 ```
 
 Set MEDEC `data_root: benchmark_multi_kalypso/data/medec` and ContractNLI `data_root: benchmark_multi_kalypso/data/contract_nli` in your config.
-MEDEC also accepts a direct CSV path; FEVER accepts a directory containing `fever_claims_1000.csv` or a direct CSV path.
+Each `data_root` is a folder with the same layout as that workload's default root.
+FEVER reads `<root>/fever_claims_1000.csv`, MEDEC reads `<root>/MEDEC-TrainingSet-1000.csv`, and ContractNLI reads `<root>/contracts/` and `<root>/hypotheses/`.
 Relative data roots resolve from the repository root.
 ContractNLI conversion preserves all labels as integer-named hypothesis files and emits documents in source order.
 Use a fresh ContractNLI output directory to avoid stale documents from earlier splits.

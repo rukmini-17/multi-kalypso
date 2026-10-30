@@ -5,7 +5,7 @@ import signal
 import subprocess
 import time
 import warnings
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import yaml
@@ -13,7 +13,7 @@ import yaml
 from . import servers
 from .config import Experiment, Run, expand, load_config
 from .dataset import count_rows, materialize, materialize_table
-from .plans import REPO_ROOT, build_plan, to_request
+from .plans import REPO_ROOT, Join, build_plan, to_request
 from .results import Result, append_result, derive
 
 
@@ -52,9 +52,7 @@ def preflight(
         root = workload.data_root
         data_root = (Path(repo_root) / root).resolve() if root is not None else None
         plan = build_plan(workload.name, workload.rows, data_root)
-        tables = [("rows", plan.data_path, plan.rows)]
-        if workload.name == "contract_nli":
-            tables.append(("hypotheses", Path(plan.ops[1]["args"]["right_table"]), 17))
+        tables = [("rows", plan.data_path, plan.rows), *plan.tables]
         counts[workload.name] = {}
         for label, path, needed in tables:
             try:
@@ -84,17 +82,24 @@ def run_one(
             plan, plan.rows, run_dir / "data", allow_fewer_rows=config.allow_fewer_rows
         )
         result.rows = count_rows(data_path)
+        right_tables = {
+            path: materialize_table(
+                path, rows, run_dir / label, allow_fewer_rows=config.allow_fewer_rows
+            )
+            for label, path, rows in plan.tables
+        }
+        if right_tables:
+            result.hypotheses = sum(count_rows(path) for path in right_tables.values())
+        plan = replace(
+            plan,
+            ops=[
+                replace(op, table=right_tables[op.table])
+                if isinstance(op, Join)
+                else op
+                for op in plan.ops
+            ],
+        )
         body = to_request(plan, data_path, config.model)
-        for op in body["ops"]:
-            if op["op"] == "join":
-                right = materialize_table(
-                    Path(op["args"]["right_table"]),
-                    17,
-                    run_dir / "hypotheses",
-                    allow_fewer_rows=config.allow_fewer_rows,
-                )
-                result.hypotheses = count_rows(right)
-                op["args"]["right_table"] = str(right)
         (run_dir / "request.json").write_text(json.dumps(body, indent=2) + "\n")
         if config.reset_prefix_cache:
             servers.reset_prefix_caches(workers)

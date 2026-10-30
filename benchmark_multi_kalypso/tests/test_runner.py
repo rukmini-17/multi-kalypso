@@ -8,7 +8,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from benchmark_multi_kalypso import runner
+from benchmark_multi_kalypso import plans, runner
 from benchmark_multi_kalypso.config import Workload, load_config
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -122,7 +122,38 @@ def test_allow_fewer_rows_records_actual_rows_and_hypotheses(tmp_path, monkeypat
     with pytest.warns(UserWarning):
         (result,) = runner.run_host(config, 2, ["0", "1"], tmp_path / "out", ROOT)
     assert (result.rows, result.hypotheses, result.status) == (10, 10, "ok")
-    assert Path(post.call_args.args[1]["ops"][1]["args"]["right_table"]).is_absolute()
+    right = Path(post.call_args.args[1]["ops"][1]["args"]["right_table"])
+    assert right == tmp_path / "out/round_robin/contract_nli/rep_1/hypotheses"
+    assert runner.count_rows(right) == 10
+
+
+def test_runner_uses_declared_join_position_and_rows(tmp_path, monkeypatch):
+    workload = plans.WORKLOADS["contract_nli"]
+    join = replace(workload.ops[1], rows=3)
+    monkeypatch.setitem(
+        plans.WORKLOADS,
+        "contract_nli",
+        replace(workload, ops=[join, workload.ops[0], workload.ops[2]]),
+    )
+    config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
+    config = replace(config, workloads=[Workload("contract_nli", 2)])
+    assert runner.preflight(config, ROOT) == {
+        "contract_nli": {"rows": (10, 2), "hypotheses": (10, 3)}
+    }
+    fake_host(monkeypatch)
+    monkeypatch.setattr(runner, "registered_policies", lambda: {"round_robin"})
+    monkeypatch.setattr(
+        runner.servers,
+        "start_coordinator",
+        Mock(return_value=SimpleNamespace(url="http://c")),
+    )
+    post = Mock(return_value={"num_output_rows": 1, "results": []})
+    monkeypatch.setattr(runner.servers, "post_query", post)
+    (result,) = runner.run_host(config, 2, ["0", "1"], tmp_path / "out", ROOT)
+    assert (result.rows, result.hypotheses, result.status) == (2, 3, "ok")
+    right = Path(post.call_args.args[1]["ops"][0]["args"]["right_table"])
+    assert right == tmp_path / "out/round_robin/contract_nli/rep_1/hypotheses"
+    assert runner.count_rows(right) == 3
 
 
 def test_dry_run_starts_nothing_and_prints_36_runs(tmp_path, monkeypatch, capsys):
@@ -147,10 +178,12 @@ def test_dry_run_starts_nothing_and_prints_36_runs(tmp_path, monkeypatch, capsys
     start.assert_not_called()
 
 
-def test_preflight_counts_repository_relative_csv(tmp_path):
-    (tmp_path / "claims.csv").write_text('data\n"first claim"\n"second claim"\n')
+def test_preflight_counts_repository_relative_data_root(tmp_path):
+    root = tmp_path / "claims"
+    root.mkdir()
+    (root / "fever_claims_1000.csv").write_text('data\n"first claim"\n"second claim"\n')
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
-    config = replace(config, workloads=[Workload("fever", 2, "claims.csv")])
+    config = replace(config, workloads=[Workload("fever", 2, "claims")])
     assert runner.preflight(config, tmp_path) == {"fever": {"rows": (2, 2)}}
 
 
