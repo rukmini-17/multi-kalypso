@@ -1,20 +1,11 @@
 import io
-import re
-import shutil
 import subprocess
-import sys
 import tarfile
-import traceback
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .config import Experiment
-
-
-COMPILED = re.compile(
-    r"vllm/(.*\.so|vllm_flash_attn/.*\.py|third_party/triton_kernels/.*\.py)"
-)
 
 
 def jobs(config: "Experiment", only_n: int | None = None) -> list[tuple[int, str]]:
@@ -27,21 +18,23 @@ def jobs(config: "Experiment", only_n: int | None = None) -> list[tuple[int, str
     ]
 
 
-def pack_directory(root: Path) -> bytes:
-    buffer = io.BytesIO()
-    with tarfile.open(fileobj=buffer, mode="w:gz", dereference=True) as tar:
-        for path in sorted(root.iterdir()):
-            tar.add(path, arcname=path.name)
-    return buffer.getvalue()
-
-
-def unpack(data: bytes, target: Path) -> None:
-    target.mkdir(parents=True, exist_ok=True)
-    with tarfile.open(fileobj=io.BytesIO(data)) as tar:
-        tar.extractall(target, filter="data")
-
-
 def archive_repo(repo: Path, ref: str, config: "Experiment") -> bytes:
+    if subprocess.check_output(
+        [
+            "git",
+            "-C",
+            str(repo),
+            "status",
+            "--porcelain",
+            "--",
+            "benchmark_multi_kalypso",
+        ],
+        text=True,
+    ).strip():
+        raise ValueError(
+            "Uncommitted changes in benchmark_multi_kalypso/. "
+            "Commit package changes before a Modal run."
+        )
     sha = subprocess.check_output(
         ["git", "-C", str(repo), "rev-parse", "--verify", f"{ref}^{{commit}}"],
         text=True,
@@ -54,8 +47,7 @@ def archive_repo(repo: Path, ref: str, config: "Experiment") -> bytes:
         tarfile.open(fileobj=io.BytesIO(archive)) as source,
         tarfile.open(fileobj=buffer, mode="w:gz", dereference=True) as target,
     ):
-        # Overlay the entire working experiment package even before its first commit.
-        roots = [Path("benchmark_multi_kalypso")]
+        roots = []
         for workload in config.workloads:
             if workload.data_root:
                 root = Path(workload.data_root)
@@ -85,62 +77,6 @@ def _source_filter(member: tarfile.TarInfo) -> tarfile.TarInfo | None:
         None
         if "__pycache__" in Path(member.name).parts or member.name.endswith(".pyc")
         else member
-    )
-
-
-def overlay_compiled(site: Path, repo: Path) -> None:
-    for path in (site / "vllm").rglob("*"):
-        rel = path.relative_to(site).as_posix()
-        target = repo / rel
-        if (
-            path.is_file()
-            and COMPILED.fullmatch(rel)
-            and (rel.endswith(".so") or not target.exists())
-        ):
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(path, target)
-
-
-def run_uploaded(
-    config_text: str, n: int, repo_tar: bytes, site: Path, work: Path
-) -> tuple[int, bytes]:
-    repo, out = work / "repo", work / "out"
-    original_path = list(sys.path)
-    original_modules = {
-        name: module for name, module in sys.modules.items() if _source_module(name)
-    }
-    try:
-        unpack(repo_tar, repo)
-        overlay_compiled(site, repo)
-        # Load uploaded sources instead of Modal's potentially different auto-mount.
-        sys.path.insert(0, str(repo))
-        for name in list(sys.modules):
-            if _source_module(name):
-                del sys.modules[name]
-        from benchmark_multi_kalypso.config import parse_config
-        from benchmark_multi_kalypso.runner import run_host
-
-        results = run_host(
-            parse_config(config_text), n, [str(i) for i in range(n)], out, repo
-        )
-        status = int(any(r.status == "error" for r in results))
-    except Exception:
-        out.mkdir(parents=True, exist_ok=True)
-        (out / "host_error.txt").write_text(traceback.format_exc())
-        status = 1
-    finally:
-        # A reused container must not retain imports from a deleted temporary tree.
-        sys.path[:] = original_path
-        for name in list(sys.modules):
-            if _source_module(name):
-                del sys.modules[name]
-        sys.modules.update(original_modules)
-    return status, pack_directory(out)
-
-
-def _source_module(name: str) -> bool:
-    return name in {"benchmark_multi_kalypso", "vllm"} or name.startswith(
-        ("benchmark_multi_kalypso.", "vllm.")
     )
 
 

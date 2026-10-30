@@ -4,19 +4,18 @@ import subprocess
 import sys
 import tarfile
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
 from benchmark_multi_kalypso.config import load_config
-from benchmark_multi_kalypso.remote import (
-    archive_repo,
-    jobs,
-    merge_results,
+from benchmark_multi_kalypso.container import (
     overlay_compiled,
     pack_directory,
     run_uploaded,
     unpack,
 )
+from benchmark_multi_kalypso.remote import archive_repo, jobs, merge_results
 from benchmark_multi_kalypso.results import Result, append_result
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -53,7 +52,9 @@ def test_unpack_rejects_path_traversal(tmp_path):
     assert not (tmp_path / "escaped.txt").exists()
 
 
-def test_archive_overlays_uncommitted_package_and_local_dataset(tmp_path, monkeypatch):
+def test_archive_keeps_committed_package_and_overlays_local_dataset(
+    tmp_path, monkeypatch
+):
     repo = tmp_path / "repo"
     package = repo / "benchmark_multi_kalypso"
     package.mkdir(parents=True)
@@ -67,7 +68,7 @@ def test_archive_overlays_uncommitted_package_and_local_dataset(tmp_path, monkey
 
     from benchmark_multi_kalypso.config import Workload
 
-    config = replace(config, workloads=[Workload("fever", 1, "datasets/fever.csv")])
+    config = replace(config, workloads=[Workload("fever", 1, "datasets")])
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode="w") as tar:
         for name, content in [
@@ -81,6 +82,8 @@ def test_archive_overlays_uncommitted_package_and_local_dataset(tmp_path, monkey
 
     def git(args, **kwargs):
         calls.append(args)
+        if "status" in args:
+            return ""
         return "abc123\n" if "rev-parse" in args else buffer.getvalue()
 
     monkeypatch.setattr(subprocess, "check_output", git)
@@ -88,7 +91,7 @@ def test_archive_overlays_uncommitted_package_and_local_dataset(tmp_path, monkey
     assert (tmp_path / "unpacked/vllm/source.py").read_text() == "committed source"
     assert (
         tmp_path / "unpacked/benchmark_multi_kalypso/runner.py"
-    ).read_text() == "working package"
+    ).read_text() == "old package"
     assert (
         tmp_path / "unpacked/benchmark_multi_kalypso/source_commit.txt"
     ).read_text() == "abc123\n"
@@ -96,7 +99,31 @@ def test_archive_overlays_uncommitted_package_and_local_dataset(tmp_path, monkey
         tmp_path / "unpacked/datasets/fever.csv"
     ).read_text() == "data\ncustom claim\n"
     assert not (tmp_path / "unpacked/benchmark_multi_kalypso/__pycache__").exists()
-    assert calls[0][-1] == "HEAD^{commit}"
+    assert calls[1][-1] == "HEAD^{commit}"
+
+
+@pytest.mark.parametrize(
+    "status",
+    [" M benchmark_multi_kalypso/runner.py\n", "?? benchmark_multi_kalypso/new.py\n"],
+)
+def test_archive_rejects_uncommitted_package_changes(tmp_path, monkeypatch, status):
+    git = Mock(return_value=status)
+    monkeypatch.setattr(subprocess, "check_output", git)
+    config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
+    with pytest.raises(ValueError, match="Commit package changes before a Modal run"):
+        archive_repo(tmp_path, "HEAD", config)
+    git.assert_called_once_with(
+        [
+            "git",
+            "-C",
+            str(tmp_path),
+            "status",
+            "--porcelain",
+            "--",
+            "benchmark_multi_kalypso",
+        ],
+        text=True,
+    )
 
 
 def test_overlay_replaces_kernels_but_preserves_source_python(tmp_path):
@@ -128,32 +155,40 @@ def test_merge_appends_each_n_in_group_order(tmp_path):
     assert len((out / "results.csv").read_text().splitlines()) == 3
 
 
-def test_uploaded_job_calls_archived_runner_and_restores_imports(tmp_path):
+@pytest.mark.parametrize("config_text,code", [("config text", 0), ("fail", 3)])
+def test_uploaded_job_runs_archived_cli_and_packs_failures(
+    tmp_path, capfd, config_text, code
+):
     source = tmp_path / "source/benchmark_multi_kalypso"
     source.mkdir(parents=True)
     (source / "__init__.py").write_text("")
-    (source / "config.py").write_text("def parse_config(text):\n    return text\n")
     (source / "runner.py").write_text(
-        "import json\nfrom types import SimpleNamespace\n"
-        "def run_host(config, n, gpus, out, repo):\n"
-        "    out.mkdir()\n"
-        "    (out / 'called.json').write_text(json.dumps([config, n, gpus]))\n"
-        "    return [SimpleNamespace(status='ok')]\n"
+        "import argparse, json\nfrom pathlib import Path\n"
+        "p = argparse.ArgumentParser()\n"
+        "for arg in ('config', 'n', 'gpus', 'out'): p.add_argument('--' + arg)\n"
+        "a = p.parse_args()\n"
+        "config = Path(a.config).read_text()\n"
+        "print('archived runner')\n"
+        "if config == 'fail': raise SystemExit(3)\n"
+        "out = Path(a.out)\nout.mkdir()\n"
+        "(out / 'called.json').write_text(json.dumps([config, a.n, a.gpus]))\n"
     )
     old_path = list(sys.path)
-    old_runner = sys.modules["benchmark_multi_kalypso.runner"]
-    archive = pack_directory(source.parent)
-    # Execute twice to model a reused Modal container, with a different temp tree.
-    for i in range(2):
-        status, output = run_uploaded(
-            "config text", 2, archive, tmp_path / "site", tmp_path / f"job{i}"
-        )
-        assert status == 0
-        unpack(output, tmp_path / f"result{i}")
-        assert json.loads((tmp_path / f"result{i}/called.json").read_text()) == [
+    status, output = run_uploaded(
+        config_text,
+        2,
+        pack_directory(source.parent),
+        tmp_path / "site",
+        tmp_path / "job",
+    )
+    assert status == code
+    unpack(output, tmp_path / "result")
+    assert capfd.readouterr().out == "archived runner\n"
+    assert not (tmp_path / "result/host.log").exists()
+    if code == 0:
+        assert json.loads((tmp_path / "result/called.json").read_text()) == [
             "config text",
-            2,
-            ["0", "1"],
+            "2",
+            "0,1",
         ]
-        assert sys.path == old_path
-        assert sys.modules["benchmark_multi_kalypso.runner"] is old_runner
+    assert sys.path == old_path

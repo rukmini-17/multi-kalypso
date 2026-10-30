@@ -1,1 +1,4 @@
+# Converted datasets stay local; only the FEVER claims are tracked.
+*
+!.gitignore
 !fever_claims_1000.csv

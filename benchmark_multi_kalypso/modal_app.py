@@ -17,7 +17,7 @@ image = (
     .apt_install("git", "curl")
     .uv_pip_install(WHEEL, "faiss-cpu", "pyyaml", "requests")
     .env({"HF_HOME": "/cache/hf"})
-    .add_local_python_source("benchmark_multi_kalypso")
+    .add_local_python_source("benchmark_multi_kalypso.container")
 )
 hf_cache = modal.Volume.from_name("kalypso-hf-cache", create_if_missing=True)
 app = modal.App("kalypso-m3-sweep", image=image)
@@ -25,7 +25,7 @@ app = modal.App("kalypso-m3-sweep", image=image)
 
 @app.function(timeout=24 * 3600, volumes={"/cache": hf_cache})
 def run_n(config_text: str, n: int, repo_tar: bytes) -> tuple[int, bytes]:
-    from benchmark_multi_kalypso.remote import run_uploaded
+    from benchmark_multi_kalypso.container import run_uploaded
 
     with tempfile.TemporaryDirectory(prefix="kalypso-") as work:
         return run_uploaded(
@@ -36,7 +36,8 @@ def run_n(config_text: str, n: int, repo_tar: bytes) -> tuple[int, bytes]:
 @app.local_entrypoint()
 def main(config: str, ref: str = "HEAD", only_n: int = 0):
     from benchmark_multi_kalypso.config import parse_config
-    from benchmark_multi_kalypso.remote import archive_repo, jobs, merge_results, unpack
+    from benchmark_multi_kalypso.container import unpack
+    from benchmark_multi_kalypso.remote import archive_repo, jobs, merge_results
 
     root = Path(__file__).resolve().parents[1]
     config_text = Path(config).read_text(encoding="utf-8")

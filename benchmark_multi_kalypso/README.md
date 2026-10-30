@@ -42,6 +42,7 @@ Ports 8000 and 8100 through 8100+N-1 must be free.
 Workers and the coordinator bind to localhost.
 Data preflight runs before worker startup and rejects undersized datasets unless `allow_fewer_rows` is true.
 SIGTERM and SIGHUP interrupt the runner so its cleanup blocks stop the server process groups.
+After the first interrupt, further SIGTERM, SIGHUP and SIGINT signals are ignored until cleanup completes.
 The command exits nonzero for failed runs and retains their logs and result rows; unavailable policies have status `skipped_policy`.
 Use a fresh output directory for retries because recorder files append.
 
@@ -49,6 +50,7 @@ Outputs include host worker logs, a config snapshot, source commit, CSV/JSONL re
 `completion_s` measures wall time around the query POST, excluding startup, data preparation and prefix reset.
 `rows_per_s` uses actual input rows, and is left empty for failed or skipped runs.
 ContractNLI also records the actual hypothesis count.
+Local results record the Git SHA with a `-dirty` suffix when tracked files have uncommitted changes.
 The recorder can be inspected further with `vllm/kalypso/benchmark/summarize_requests.py`.
 
 ## Prepare official data offline
@@ -69,7 +71,9 @@ Relative data roots resolve from the repository root.
 ContractNLI conversion preserves all labels as integer-named hypothesis files and emits documents in source order.
 Use a fresh ContractNLI output directory to avoid stale documents from earlier splits.
 MEDEC's `data` column reproduces the sample's Text ID, clinical note and numbered sentences exactly.
-CSV materialization preserves headers and multiline cells; text files are selected by integer stem and copied into each run directory.
+CSV materialization preserves headers and multiline cells; text files are selected by integer stem.
+Each workload's inputs are copied once per host into `out/data/<workload>/`, with right tables in `table_<op index>` folders.
+All runs reuse those copies and retain their own small `request.json` files.
 Too few rows or hypotheses fail clearly by default.
 `allow_fewer_rows: true` warns and records actual counts for sample exploration; those runs do not represent the full M3 workload.
 
@@ -86,10 +90,14 @@ modal run benchmark_multi_kalypso/modal_app.py --config benchmark_multi_kalypso/
 ```
 
 The entrypoint spawns one container per N concurrently, requesting `A10:2`, `A10:3`, and `A10:4` from `hardware.gpu_type` and `n_workers`.
-It archives the selected Git ref, overlays the current experiment package and configured data roots, and records the selected ref's commit.
-The commit identifies the archived engine source; the experiment package and supplied datasets come from the working tree.
+Commit package changes before a Modal run.
+Uncommitted changes under `benchmark_multi_kalypso/` block archiving with a commit-first error.
+It archives the engine and experiment package exactly at the selected Git ref and records that ref's commit.
+Only configured data root folders are overlaid from the working tree.
 For Modal, custom data roots must be inside the repository and use relative paths.
 The image installs the pinned precompiled wheel for upstream base `2c0ee0fde8db447bd6e7d3ea0d49070661a243fa`, then overlays its compiled artifacts into the uploaded source tree.
+Each container invokes the same runner CLI used for a local host in a separate process.
+The runner inherits stdout and stderr so progress appears live in Modal logs.
 HF downloads use volume `kalypso-hf-cache` mounted at `/cache`, with `HF_HOME=/cache/hf`.
 Downloaded results go to `kalypso_modal_run/<timestamp>/n<N>/`, with merged CSV/JSONL at the timestamp root.
 Each container has a 24-hour timeout; unusually slow groups may require a smaller matrix.
@@ -109,7 +117,7 @@ Child environments always remove `KALYPSO_COIN_FLIP_SEED` and `KALYPSO_SKIP_INFE
 The M3 sweep defaults `kv_cache_metrics_sample` to null to avoid sampling overhead in timed runs.
 Raise it to a fraction up to 1.0 for separate eviction analysis; sampling every block can perturb timing.
 Plans never add ignored `max_tokens` arguments, and request table paths are absolute.
-MEDEC and ContractNLI prompts are read at runtime from upstream `scenarios.py` using AST literals to avoid vLLM imports.
+MEDEC and ContractNLI prompts use upstream `scenarios.py` constants.
 FEVER uses blocking execution because aggregation input order differs when pipelined.
 The existing `sem_agg` default of 8192 output tokens risks exceeding the configured 4096 context, especially with many mapped claims; this remains unresolved engine work.
 Full MEDEC/ContractNLI datasets and teammate policy `cost_aware` are pending inputs.
