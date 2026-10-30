@@ -3,11 +3,11 @@ import csv
 import json
 from pathlib import Path
 
-from .plans import WORKLOADS
+MEDEC_CSV = "MEDEC-TrainingSet-1000.csv"
 
 
 def prepare_medec(source: Path, out: Path) -> Path:
-    out = out / WORKLOADS["medec"].data_path
+    out = out / MEDEC_CSV
     out.parent.mkdir(parents=True, exist_ok=True)
     with (
         source.open(newline="", encoding="utf-8-sig") as src,

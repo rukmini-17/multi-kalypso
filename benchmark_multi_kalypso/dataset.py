@@ -3,8 +3,6 @@ import shutil
 import warnings
 from pathlib import Path
 
-from .plans import Plan
-
 
 def text_files(path: Path) -> list[Path]:
     return sorted(path.glob("*.txt"), key=lambda p: int(p.stem))
@@ -50,11 +48,3 @@ def materialize_table(
                 break
             writer.writerow(row)
     return target.resolve()
-
-
-def materialize(
-    plan: Plan, rows: int, out_dir: str | Path, *, allow_fewer_rows: bool = False
-) -> Path:
-    return materialize_table(
-        plan.data_path, rows, Path(out_dir), allow_fewer_rows=allow_fewer_rows
-    )

@@ -13,6 +13,13 @@ import requests
 
 from .config import Experiment
 
+WORKER_BASE_PORT = 8100
+COORDINATOR_PORT = 8000
+
+
+def worker_url(index: int) -> str:
+    return f"http://127.0.0.1:{WORKER_BASE_PORT + index}"
+
 
 @dataclass
 class Server:
@@ -150,7 +157,7 @@ def start_workers(
     workers = []
     try:
         for i, gpu in enumerate(gpus):
-            port = 8100 + i
+            port = WORKER_BASE_PORT + i
             workers.append(
                 start(
                     worker_command(config, port, repo_root),
@@ -176,7 +183,7 @@ def start_coordinator(
     run_dir: Path,
     repo_root: Path,
 ) -> Server:
-    port = 8000
+    port = COORDINATOR_PORT
     cmd = coordinator_command(config, policy, [w.url for w in workers], port, run_dir)
     server = start(
         cmd, child_env(repo_root), repo_root, run_dir / "coordinator.log", port

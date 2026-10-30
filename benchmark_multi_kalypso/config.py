@@ -95,11 +95,7 @@ def parse_config(text: str) -> Experiment:
         ):
             raise ValueError(f"Invalid policy name: {policy!r}")
     for w in config.workloads:
-        if (
-            w.name not in {"fever", "medec", "contract_nli"}
-            or type(w.rows) is not int
-            or w.rows < 1
-        ):
+        if type(w.rows) is not int or w.rows < 1:
             raise ValueError(f"Invalid workload: {w}")
     for items in (
         config.n_workers,

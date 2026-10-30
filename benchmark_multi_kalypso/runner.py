@@ -5,15 +5,15 @@ import signal
 import subprocess
 import time
 import warnings
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from pathlib import Path
 
 import yaml
 
 from . import servers
 from .config import Experiment, Run, expand, load_config
-from .dataset import count_rows, materialize, materialize_table
-from .plans import REPO_ROOT, Join, build_plan, to_request
+from .dataset import count_rows, materialize_table
+from .plans import REPO_ROOT, Plan, build_plan, to_request
 from .results import Result, append_result, derive
 
 
@@ -36,7 +36,16 @@ def source_commit(repo_root: Path) -> str:
         return provenance.read_text().strip()
     try:
         return subprocess.check_output(
-            ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+            [
+                "git",
+                "-C",
+                str(repo_root),
+                "describe",
+                "--always",
+                "--dirty",
+                "--match",
+                "",
+            ],
             text=True,
             stderr=subprocess.DEVNULL,
         ).strip()
@@ -44,25 +53,58 @@ def source_commit(repo_root: Path) -> str:
         return "unknown"
 
 
-def preflight(
-    config: Experiment, repo_root: str | Path
-) -> dict[str, dict[str, tuple[int, int]]]:
-    counts = {}
+def build_plans(config: Experiment, repo_root: str | Path) -> list[Plan]:
+    repo = Path(repo_root).resolve()
+    plans = []
     for workload in config.workloads:
-        root = workload.data_root
-        data_root = (Path(repo_root) / root).resolve() if root is not None else None
-        plan = build_plan(workload.name, workload.rows, data_root)
-        tables = [("rows", plan.data_path, plan.rows), *plan.tables]
-        counts[workload.name] = {}
+        root = repo / workload.data_root if workload.data_root is not None else None
+        plans.append(build_plan(workload.name, workload.rows, root))
+    return plans
+
+
+def preflight(plans: list[Plan]) -> dict[str, dict[str, tuple[int, int]]]:
+    counts = {}
+    for plan in plans:
+        tables = [("rows", plan.data_path, plan.rows)] + [
+            (f"table_{index}", path, rows) for index, path, rows in plan.tables
+        ]
+        counts[plan.name] = {}
         for label, path, needed in tables:
             try:
                 available = count_rows(path)
             except (OSError, ValueError) as exc:
                 raise ValueError(
-                    f"Data preflight failed for {workload.name} {label}: {path}: {exc}"
+                    f"Data preflight failed for {plan.name} {label}: {path}: {exc}"
                 ) from exc
-            counts[workload.name][label] = (available, needed)
+            counts[plan.name][label] = (available, needed)
     return counts
+
+
+def prepare_inputs(
+    config: Experiment, plans: list[Plan], out: Path
+) -> dict[str, tuple[dict, int, int | None]]:
+    prepared = {}
+    for plan in plans:
+        folder = out / "data" / plan.name
+        data = materialize_table(
+            plan.data_path,
+            plan.rows,
+            folder / "input",
+            allow_fewer_rows=config.allow_fewer_rows,
+        )
+        body = to_request(plan, data, config.model)
+        right_rows = None
+        for index, path, rows in plan.tables:
+            right = materialize_table(
+                path,
+                rows,
+                folder / f"table_{index}",
+                allow_fewer_rows=config.allow_fewer_rows,
+            )
+            body["ops"][index]["args"]["right_table"] = str(right)
+            right_rows = (right_rows or 0) + count_rows(right)
+        prepared[plan.name] = body, count_rows(data), right_rows
+    return prepared
 
 
 def run_one(
@@ -72,34 +114,10 @@ def run_one(
     run_dir: Path,
     repo_root: Path,
     result: Result,
+    body: dict,
 ) -> None:
     coordinator = None
     try:
-        root = run.workload.data_root
-        data_root = (repo_root / root).resolve() if root is not None else None
-        plan = build_plan(run.workload.name, run.workload.rows, data_root)
-        data_path = materialize(
-            plan, plan.rows, run_dir / "data", allow_fewer_rows=config.allow_fewer_rows
-        )
-        result.rows = count_rows(data_path)
-        right_tables = {
-            path: materialize_table(
-                path, rows, run_dir / label, allow_fewer_rows=config.allow_fewer_rows
-            )
-            for label, path, rows in plan.tables
-        }
-        if right_tables:
-            result.hypotheses = sum(count_rows(path) for path in right_tables.values())
-        plan = replace(
-            plan,
-            ops=[
-                replace(op, table=right_tables[op.table])
-                if isinstance(op, Join)
-                else op
-                for op in plan.ops
-            ],
-        )
-        body = to_request(plan, data_path, config.model)
         (run_dir / "request.json").write_text(json.dumps(body, indent=2) + "\n")
         if config.reset_prefix_cache:
             servers.reset_prefix_caches(workers)
@@ -152,7 +170,8 @@ def run_host(
     ):
         raise ValueError("Supply exactly N distinct GPU identifiers")
     out, repo = Path(out_dir).resolve(), Path(repo_root).resolve()
-    counts = preflight(config, repo)
+    plans = build_plans(config, repo)
+    counts = preflight(plans)
     shortages = [
         f"{name} {label}: have {have}, need {need}"
         for name, tables in counts.items()
@@ -166,6 +185,7 @@ def run_host(
     (out / "config.yaml").write_text(yaml.safe_dump(asdict(config), sort_keys=False))
     commit = source_commit(repo)
     (out / "source_commit.txt").write_text(commit + "\n")
+    prepared = prepare_inputs(config, plans, out)
     policies = registered_policies()
     results, workers = [], []
     startup_error = None
@@ -197,7 +217,8 @@ def run_host(
             elif startup_error:
                 result.error = startup_error
             else:
-                run_one(config, run, workers, run_dir, repo, result)
+                body, result.rows, result.hypotheses = prepared[run.workload.name]
+                run_one(config, run, workers, run_dir, repo, result, body)
             (run_dir / "result.json").write_text(
                 json.dumps(asdict(result), indent=2) + "\n"
             )
@@ -217,13 +238,15 @@ def dry_run(config: Experiment, n: int, gpus: list[str], out: Path) -> None:
     runs = expand(config, n)
     if len(gpus) != n or len(set(gpus)) != n:
         raise ValueError("Supply exactly N distinct GPU identifiers")
-    counts = preflight(config, REPO_ROOT)
+    counts = preflight(build_plans(config, REPO_ROOT))
     policies = registered_policies()
     print(f"N={n}: {len(runs)} runs; no processes will start")
     for i, gpu in enumerate(gpus):
         print(
             f"CUDA_VISIBLE_DEVICES={gpu} VLLM_SERVER_DEV_MODE=1 "
-            + shlex.join(servers.worker_command(config, 8100 + i, REPO_ROOT))
+            + shlex.join(
+                servers.worker_command(config, servers.WORKER_BASE_PORT + i, REPO_ROOT)
+            )
         )
     print("Child environments unset KALYPSO_COIN_FLIP_SEED and KALYPSO_SKIP_INFERENCE")
     for run in runs:
@@ -251,8 +274,8 @@ def dry_run(config: Experiment, n: int, gpus: list[str], out: Path) -> None:
                 servers.coordinator_command(
                     config,
                     run.policy,
-                    [f"http://127.0.0.1:{8100 + i}" for i in range(n)],
-                    8000,
+                    [servers.worker_url(i) for i in range(n)],
+                    servers.COORDINATOR_PORT,
                     out.resolve() / run.name,
                 )
             )
@@ -261,9 +284,11 @@ def dry_run(config: Experiment, n: int, gpus: list[str], out: Path) -> None:
 
 def main() -> int:
     def interrupt(signum: int, _frame: object) -> None:
+        for sig in (signal.SIGTERM, signal.SIGHUP, signal.SIGINT):
+            signal.signal(sig, signal.SIG_IGN)
         raise KeyboardInterrupt(f"Received {signal.Signals(signum).name}")
 
-    for signum in (signal.SIGTERM, signal.SIGHUP):
+    for signum in (signal.SIGTERM, signal.SIGHUP, signal.SIGINT):
         signal.signal(signum, interrupt)
     parser = argparse.ArgumentParser(
         description="Run one N-worker M3 group on this host"

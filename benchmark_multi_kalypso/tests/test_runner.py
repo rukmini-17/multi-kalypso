@@ -25,6 +25,10 @@ def fake_host(monkeypatch):
 
 
 def test_success_and_unknown_policy_write_complete_result_rows(tmp_path, monkeypatch):
+    build = Mock(wraps=runner.build_plan)
+    monkeypatch.setattr(runner, "build_plan", build)
+    materialize = Mock(wraps=runner.materialize_table)
+    monkeypatch.setattr(runner, "materialize_table", materialize)
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
     config = replace(config, policies=["round_robin", "cost_aware"], reps=2)
     start, stop, reset = fake_host(monkeypatch)
@@ -53,6 +57,11 @@ def test_success_and_unknown_policy_write_complete_result_rows(tmp_path, monkeyp
     assert coord_start.call_count == 2
     assert stop.call_count == 4  # Two fresh coordinators and two persistent workers.
     body = post.call_args.args[1]
+    assert materialize.call_count == 1
+    build.assert_called_once_with("fever", 20, None)
+    assert body is post.call_args_list[0].args[1]
+    assert Path(body["data_path"]) == out / "data/fever/input/input.csv"
+    assert not (out / "round_robin/fever/rep_1/data").exists()
     assert Path(body["data_path"]).is_absolute()
     assert body["blocking"] is True
     assert post.call_args.args[2] == 3600
@@ -123,7 +132,7 @@ def test_allow_fewer_rows_records_actual_rows_and_hypotheses(tmp_path, monkeypat
         (result,) = runner.run_host(config, 2, ["0", "1"], tmp_path / "out", ROOT)
     assert (result.rows, result.hypotheses, result.status) == (10, 10, "ok")
     right = Path(post.call_args.args[1]["ops"][1]["args"]["right_table"])
-    assert right == tmp_path / "out/round_robin/contract_nli/rep_1/hypotheses"
+    assert right == tmp_path / "out/data/contract_nli/table_1"
     assert runner.count_rows(right) == 10
 
 
@@ -137,8 +146,8 @@ def test_runner_uses_declared_join_position_and_rows(tmp_path, monkeypatch):
     )
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
     config = replace(config, workloads=[Workload("contract_nli", 2)])
-    assert runner.preflight(config, ROOT) == {
-        "contract_nli": {"rows": (10, 2), "hypotheses": (10, 3)}
+    assert runner.preflight(runner.build_plans(config, ROOT)) == {
+        "contract_nli": {"rows": (10, 2), "table_0": (10, 3)}
     }
     fake_host(monkeypatch)
     monkeypatch.setattr(runner, "registered_policies", lambda: {"round_robin"})
@@ -152,11 +161,64 @@ def test_runner_uses_declared_join_position_and_rows(tmp_path, monkeypatch):
     (result,) = runner.run_host(config, 2, ["0", "1"], tmp_path / "out", ROOT)
     assert (result.rows, result.hypotheses, result.status) == (2, 3, "ok")
     right = Path(post.call_args.args[1]["ops"][0]["args"]["right_table"])
-    assert right == tmp_path / "out/round_robin/contract_nli/rep_1/hypotheses"
+    assert right == tmp_path / "out/data/contract_nli/table_0"
     assert runner.count_rows(right) == 3
 
 
+def test_multiple_joins_with_shared_paths_and_folder_names_are_copied_once(
+    tmp_path, monkeypatch
+):
+    first, second = tmp_path / "a/hypotheses", tmp_path / "b/hypotheses"
+    for folder, text in [(first, "first"), (second, "second")]:
+        folder.mkdir(parents=True)
+        (folder / "1.txt").write_text(text)
+    workload = plans.WORKLOADS["contract_nli"]
+    monkeypatch.setitem(
+        plans.WORKLOADS,
+        "contract_nli",
+        replace(
+            workload,
+            ops=[
+                plans.Join("one", first, 1),
+                plans.Join("two", second, 1),
+                plans.Join("three", first, 1),
+            ],
+        ),
+    )
+    config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
+    config = replace(config, workloads=[Workload("contract_nli", 2)], reps=2)
+    materialize = Mock(wraps=runner.materialize_table)
+    monkeypatch.setattr(runner, "materialize_table", materialize)
+    fake_host(monkeypatch)
+    monkeypatch.setattr(runner, "registered_policies", lambda: {"round_robin"})
+    monkeypatch.setattr(
+        runner.servers,
+        "start_coordinator",
+        Mock(return_value=SimpleNamespace(url="http://c")),
+    )
+    post = Mock(return_value={"num_output_rows": 1, "results": []})
+    monkeypatch.setattr(runner.servers, "post_query", post)
+    results = runner.run_host(config, 2, ["0", "1"], tmp_path / "out", ROOT)
+    assert [(r.rows, r.hypotheses, r.status) for r in results] == [(2, 3, "ok")] * 2
+    assert materialize.call_count == 4  # Main table and three distinct Join ops.
+    assert post.call_args_list[0].args[1] is post.call_args_list[1].args[1]
+    copies = [Path(op["args"]["right_table"]) for op in post.call_args.args[1]["ops"]]
+    assert [path.name for path in copies] == ["table_0", "table_1", "table_2"]
+    assert [(path / "1.txt").read_text() for path in copies] == [
+        "first",
+        "second",
+        "first",
+    ]
+    counts = runner.preflight(runner.build_plans(config, ROOT))["contract_nli"]
+    assert list(counts) == ["rows", "table_0", "table_1", "table_2"]
+    assert list(counts.values()) == [(10, 2), (1, 1), (1, 1), (1, 1)]
+
+
 def test_dry_run_starts_nothing_and_prints_36_runs(tmp_path, monkeypatch, capsys):
+    build = Mock(wraps=runner.build_plan)
+    monkeypatch.setattr(runner, "build_plan", build)
+    monkeypatch.setattr(runner.servers, "WORKER_BASE_PORT", 9100)
+    monkeypatch.setattr(runner.servers, "COORDINATOR_PORT", 9000)
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/m3_sweep.yaml")
     start, _, _ = fake_host(monkeypatch)
     monkeypatch.setattr(
@@ -165,6 +227,11 @@ def test_dry_run_starts_nothing_and_prints_36_runs(tmp_path, monkeypatch, capsys
         lambda: {"round_robin", "least_outstanding", "row_affinity"},
     )
     runner.dry_run(config, 2, ["0", "1"], tmp_path / "out")
+    assert [call.args for call in build.call_args_list] == [
+        ("fever", 500, None),
+        ("medec", 300, None),
+        ("contract_nli", 200, None),
+    ]
     output = capsys.readouterr().out
     assert len([line for line in output.splitlines() if line.startswith("N=2 ")]) == 36
     assert (
@@ -172,7 +239,9 @@ def test_dry_run_starts_nothing_and_prints_36_runs(tmp_path, monkeypatch, capsys
     )
     assert "medec/rep_1: 300 rows [insufficient: have 10, need 300]" in output
     assert "contract_nli/rep_1: 200 rows [insufficient: have 10, need 200]" in output
-    assert "[hypotheses: insufficient: have 10, need 17]" in output
+    assert "[table_1: insufficient: have 10, need 17]" in output
+    assert "--port 9100" in output and "--port 9101" in output
+    assert "--port 9000 --workers http://127.0.0.1:9100,http://127.0.0.1:9101" in output
     assert "--kv-cache-metrics" not in output
     assert not (tmp_path / "out").exists()
     start.assert_not_called()
@@ -184,14 +253,17 @@ def test_preflight_counts_repository_relative_data_root(tmp_path):
     (root / "fever_claims_1000.csv").write_text('data\n"first claim"\n"second claim"\n')
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
     config = replace(config, workloads=[Workload("fever", 2, "claims")])
-    assert runner.preflight(config, tmp_path) == {"fever": {"rows": (2, 2)}}
+    assert runner.preflight(runner.build_plans(config, tmp_path)) == {
+        "fever": {"rows": (2, 2)}
+    }
 
 
 @pytest.mark.parametrize(
     "workload,message",
     [
         (Workload("medec", 300), "medec rows: have 10, need 300"),
-        (Workload("contract_nli", 10), "contract_nli hypotheses: have 10, need 17"),
+        (Workload("contract_nli", 10), "contract_nli table_1: have 10, need 17"),
+        (Workload("missing", 1), "Unknown workload: missing"),
     ],
 )
 def test_preflight_rejects_short_data_before_starting_workers(
@@ -206,7 +278,7 @@ def test_preflight_rejects_short_data_before_starting_workers(
     assert not (tmp_path / "out").exists()
 
 
-@pytest.mark.parametrize("signum", [signal.SIGTERM, signal.SIGHUP])
+@pytest.mark.parametrize("signum", [signal.SIGTERM, signal.SIGHUP, signal.SIGINT])
 def test_main_signal_interrupt_cleans_coordinator_and_workers(
     tmp_path, monkeypatch, signum
 ):
@@ -218,6 +290,14 @@ def test_main_signal_interrupt_cleans_coordinator_and_workers(
     )
     handlers = {}
     monkeypatch.setattr(runner.signal, "signal", handlers.__setitem__)
+
+    def repeated_signal_during_cleanup(server):
+        assert all(
+            handlers[sig] == signal.SIG_IGN
+            for sig in (signal.SIGTERM, signal.SIGHUP, signal.SIGINT)
+        )
+
+    stop.side_effect = repeated_signal_during_cleanup
 
     def interrupted_post(*args):
         handlers[signum](signum, None)
@@ -245,3 +325,21 @@ def test_main_signal_interrupt_cleans_coordinator_and_workers(
         "http://w1",
         "http://w0",
     ]
+
+
+def test_source_commit_uses_dirty_description_or_archived_sha(tmp_path, monkeypatch):
+    describe = Mock(return_value="abc123-dirty\n")
+    monkeypatch.setattr(runner.subprocess, "check_output", describe)
+    assert runner.source_commit(tmp_path) == "abc123-dirty"
+    assert describe.call_args.args[0][3:] == [
+        "describe",
+        "--always",
+        "--dirty",
+        "--match",
+        "",
+    ]
+    provenance = tmp_path / "benchmark_multi_kalypso/source_commit.txt"
+    provenance.parent.mkdir()
+    provenance.write_text("archived-sha\n")
+    assert runner.source_commit(tmp_path) == "archived-sha"
+    assert describe.call_count == 1

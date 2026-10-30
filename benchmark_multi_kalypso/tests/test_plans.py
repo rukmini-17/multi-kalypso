@@ -115,8 +115,8 @@ def test_plans_match_actual_scenario_constants(name, names, constants):
     wire_ops = [op.to_wire() for op in plan.ops]
     assert [o["op"] for o in wire_ops] == names
     for op, constant in zip(wire_ops, constants):
-        assert (
-            op["args"].get("prompt", op["args"].get("instruction")) == getattr(scenarios, constant)
+        assert op["args"].get("prompt", op["args"].get("instruction")) == getattr(
+            scenarios, constant
         )
         assert "max_tokens" not in op["args"]
     assert not plan.blocking
@@ -151,7 +151,7 @@ def test_data_root_is_always_a_folder(tmp_path, name, relative, rows):
     assert plan.data_path == root / relative
     assert plan.rows == rows
     assert plan.tables == (
-        [("hypotheses", root / "hypotheses", 17)] if name == "contract_nli" else []
+        [(1, root / "hypotheses", 17)] if name == "contract_nli" else []
     )
 
 

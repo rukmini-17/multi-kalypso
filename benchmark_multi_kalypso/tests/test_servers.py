@@ -118,6 +118,7 @@ def test_stop_kills_group_even_if_parent_has_exited(monkeypatch):
 
 
 def test_partial_worker_startup_failure_cleans_started_workers(tmp_path, monkeypatch):
+    monkeypatch.setattr(servers, "WORKER_BASE_PORT", 9100)
     config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
     worker = object()
     monkeypatch.setattr(
@@ -128,3 +129,18 @@ def test_partial_worker_startup_failure_cleans_started_workers(tmp_path, monkeyp
     with pytest.raises(RuntimeError, match="port busy"):
         servers.start_workers(config, ["0", "1"], tmp_path, ROOT)
     stop.assert_called_once_with(worker)
+    assert servers.start.call_args_list[0].args[-1] == 9100
+    assert servers.start.call_args_list[1].args[-1] == 9101
+    assert servers.worker_url(1) == "http://127.0.0.1:9101"
+
+
+def test_coordinator_uses_shared_port_layout(tmp_path, monkeypatch):
+    monkeypatch.setattr(servers, "COORDINATOR_PORT", 9000)
+    start, ready = Mock(), Mock()
+    monkeypatch.setattr(servers, "start", start)
+    monkeypatch.setattr(servers, "wait_ready", ready)
+    config = load_config(ROOT / "benchmark_multi_kalypso/configs/smoke.yaml")
+    server = servers.start_coordinator(config, "round_robin", [], tmp_path, ROOT)
+    assert start.call_args.args[-1] == 9000
+    assert start.call_args.args[0][5:7] == ["--port", "9000"]
+    ready.assert_called_once_with(server, "/v1/semantic/healthz", 120)

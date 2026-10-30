@@ -3,6 +3,8 @@ from pathlib import Path
 
 from vllm.kalypso.benchmark import scenarios
 
+from .prepare_data import MEDEC_CSV
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_DATA = REPO_ROOT / "vllm/kalypso/benchmark/sample_data"
 
@@ -76,10 +78,10 @@ class Plan:
     source: str
 
     @property
-    def tables(self) -> list[tuple[str, Path, int]]:
+    def tables(self) -> list[tuple[int, Path, int]]:
         return [
-            (op.table.name, op.table, op.rows)
-            for op in self.ops
+            (index, op.table, op.rows)
+            for index, op in enumerate(self.ops)
             if isinstance(op, Join)
         ]
 
@@ -109,7 +111,7 @@ WORKLOADS = {
         name="medec",
         description="Detect and correct clinical errors",
         data_root=SAMPLE_DATA,
-        data_path=Path("MEDEC-TrainingSet-1000.csv"),
+        data_path=Path(MEDEC_CSV),
         ops=[
             Filter(scenarios.MEDEC_ERROR_FILTER),
             Map(scenarios.MEDEC_ERROR_SENTENCE_ID_MAP),

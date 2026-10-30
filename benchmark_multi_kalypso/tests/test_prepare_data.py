@@ -1,9 +1,30 @@
 import csv
 import json
+import subprocess
+import sys
+from pathlib import Path
 
 import pytest
 
 from benchmark_multi_kalypso.prepare_data import prepare_contract_nli, prepare_medec
+
+
+@pytest.mark.parametrize("module", ["prepare_data", "config", "container"])
+def test_offline_import_does_not_import_vllm_or_torch(module):
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            f"import sys; import benchmark_multi_kalypso.{module}; "
+            "assert 'torch' not in sys.modules; "
+            "print([m for m in sys.modules if m == 'vllm' or m.startswith('vllm.')])",
+        ],
+        cwd=Path(__file__).resolve().parents[2],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert result.stdout == "[]\n"
 
 
 def test_official_medec_becomes_sample_formatted_data_column(tmp_path):
