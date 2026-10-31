@@ -54,6 +54,14 @@ def make(cap=100, pol=None, gates=None, budget=80):
     return r, log
 
 
+def make_sized(sizes, default=10, cap=1000, pol=None, gates=None):
+    log, gates = [], gates or {}
+    workers = [FakeWorker(f"w{i}", FakeExec(f"w{i}", log, gates.get(f"w{i}")), cap) for i in range(2)]
+    r = router_mod.CallRouter(FakePool(workers), pol or policy.RoundRobinPolicy(),
+                              lambda prompt, max_tokens: sizes.get(prompt, default))
+    return r, log
+
+
 def test_round_robin_alternates_per_call():
     async def go():
         r, log = make()
@@ -149,6 +157,61 @@ def test_unpin_and_abort_not_supported():
                 assert False, "expected NotImplementedError"
             except NotImplementedError:
                 pass
+    asyncio.run(go())
+
+
+def test_cost_aware_is_registered_and_per_call():
+    p = policy.make_policy("cost_aware")
+    assert p.name == "cost_aware" and p.sticky is False
+
+
+def test_cost_aware_differs_from_least_outstanding():
+    async def run(pol):
+        gate = asyncio.Event()
+        r, log = make_sized({"big": 600}, pol=pol, gates={"w0": gate, "w1": gate})
+        tasks = []
+        for p in ("big", "small", "next"):
+            tasks.append(asyncio.create_task(r.execute(None, p, 8)))
+            await asyncio.sleep(0.01)
+        gate.set()
+        await asyncio.gather(*tasks)
+        return log
+
+    async def go():
+        # Both workers hold one call when "next" arrives. Counts tie, bytes do not.
+        assert await run(policy.LeastOutstandingPolicy()) == ["w0", "w1", "w0"]
+        assert await run(policy.CostAwarePolicy()) == ["w0", "w1", "w1"]
+    asyncio.run(go())
+
+
+def test_router_cost_tracks_reserved_bytes():
+    async def go():
+        gate = asyncio.Event()
+        r, _ = make_sized({"big": 600}, gates={"w0": gate})
+        a = asyncio.create_task(r.execute(None, "big", 8))
+        await asyncio.sleep(0.01)
+        w0, w1 = r.workers
+        assert r.cost(w0) == 600 and r.cost(w1) == 0
+        gate.set()
+        await a
+        assert r.cost(w0) == 0
+    asyncio.run(go())
+
+
+def test_executor_sees_the_reserved_cost():
+    async def go():
+        seen = []
+        r, _ = make_sized({"big": 600})
+        orig = r.workers[0].executor.execute
+
+        async def spy(*a, **k):
+            seen.append(router_mod.current_call_cost())
+            return await orig(*a, **k)
+
+        r.workers[0].executor.execute = spy
+        await r.execute(None, "big", 8)
+        assert seen == [600]
+        assert router_mod.current_call_cost() is None  # reset after the call
     asyncio.run(go())
 
 

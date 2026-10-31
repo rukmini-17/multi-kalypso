@@ -18,6 +18,7 @@ import time
 from vllm.kalypso.execution.determinism import Determinism, apply_determinism
 from vllm.kalypso.execution.executor import LLMExecutor, CompletionResult
 from vllm.kalypso.instrumentation import RequestRecorder, current_request_meta
+from vllm.kalypso.workers.router import current_call_cost
 
 
 class WorkerRequestError(RuntimeError):
@@ -143,6 +144,7 @@ class HttpVLLMExecutor(LLMExecutor):
                     stage=meta.get("stage"),
                     position=meta.get("position"),
                     row_idx=meta.get("row_idx"),
+                    est_cost=current_call_cost(),  # reserved KV bytes; None unless routed by CallRouter
                     kind=kind,
                     pin=pin,
                     priority=priority,
