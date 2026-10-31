@@ -57,12 +57,14 @@ class CallRouter:
             while w is None:
                 await self._cond.wait()
                 w = self._try_reserve(budget)
+        token = _CALL_COST.set(budget)
         try:
             return await getattr(w.executor, method)(
                 raw_request=raw_request, prompt=prompt, max_tokens=max_tokens,
                 pin=pin, priority=priority, **extra,
             )
         finally:
+            _CALL_COST.reset(token)
             async with self._cond:
                 self.used[w.name] -= budget
                 self.inflight[w.name] -= 1

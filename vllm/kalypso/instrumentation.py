@@ -9,7 +9,8 @@ recorder was created, from time.monotonic):
 Request row fields:
   request_id, worker, operator, stage, position, row_idx, kind ("completion"|"chat"),
   pin, priority, submit_t, start_t, finish_t, prompt_tokens,
-  completion_tokens, finish_reason, status ("ok"|"error"|"cancelled"), error
+  completion_tokens, finish_reason, status ("ok"|"error"|"cancelled"), error,
+  est_cost (KV bytes reserved by the per-call router; null for row_affinity)
 
 `start_t` is always null in v1: a non-streaming vLLM response does not say when
 the engine began running the request. Use the queue samples (waiting/running)
