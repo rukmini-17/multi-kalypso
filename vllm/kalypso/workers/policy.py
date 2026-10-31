@@ -9,6 +9,7 @@ calls on_assigned() with the worker that actually accepted the row.
 The pool is expected to provide:
     pool.workers         ordered list of workers
     pool.outstanding(w)  number of admitted, unfinished tasks on worker w
+    pool.cost(w)         reserved KV bytes on worker w (only cost_aware uses it)
 """
 
 
@@ -46,6 +47,19 @@ class LeastOutstandingPolicy:
         pass  # stateless: the load figure comes from the pool
 
 
+class CostAwarePolicy:
+    name = "cost_aware"
+    sticky = False
+
+    def rank(self, pool, task=None):
+        ws = list(pool.workers)
+        # Lowest reserved bytes first. Ties break by worker index so runs are reproducible.
+        return sorted(ws, key=lambda w: (pool.cost(w), ws.index(w)))
+
+    def on_assigned(self, worker, pool):
+        pass  # stateless: the cost figure comes from the pool
+
+
 class RowAffinityPolicy(RoundRobinPolicy):
     """Round robin for a row's first placement; every later call of the row stays there."""
     name = "row_affinity"
@@ -55,6 +69,7 @@ class RowAffinityPolicy(RoundRobinPolicy):
 POLICIES = {
     RoundRobinPolicy.name: RoundRobinPolicy,
     LeastOutstandingPolicy.name: LeastOutstandingPolicy,
+    CostAwarePolicy.name: CostAwarePolicy,
     RowAffinityPolicy.name: RowAffinityPolicy,
 }
 

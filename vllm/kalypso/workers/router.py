@@ -9,6 +9,16 @@ has room. An idle worker always accepts, so an oversized call still progresses.
 """
 
 import asyncio
+import contextvars
+
+# Estimated KV bytes the router reserved for the call being made right now.
+# The executor reads it so the request record can log it. It lives here, with
+# no vllm imports, so the router stays unit-testable.
+_CALL_COST = contextvars.ContextVar("kalypso_call_cost", default=None)
+
+
+def current_call_cost():
+    return _CALL_COST.get()
 
 
 class CallRouter:
@@ -25,6 +35,9 @@ class CallRouter:
     # The policy sees the router as its "pool".
     def outstanding(self, w):
         return self.inflight[w.name]
+    
+    def cost(self, w):
+        return self.used[w.name]  # reserved bytes, which is what cost_aware ranks by
 
     def _try_reserve(self, budget):
         for w in self.policy.rank(self, None):
