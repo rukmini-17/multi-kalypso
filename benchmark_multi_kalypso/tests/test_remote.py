@@ -1,4 +1,5 @@
 import csv
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -11,7 +12,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_jobs_are_one_group_per_n_with_gpu_count():
-    config = load_config(ROOT / "benchmark_multi_kalypso/configs/m3_sweep.yaml")
+    config = replace(
+        load_config(ROOT / "benchmark_multi_kalypso/configs/m3_sweep.yaml"),
+        n_workers=[2, 3, 4],
+    )
     assert jobs(config) == [(2, "A10:2"), (3, "A10:3"), (4, "A10:4")]
     assert jobs(config, 3) == [(3, "A10:3")]
     with pytest.raises(ValueError, match="not in configured"):

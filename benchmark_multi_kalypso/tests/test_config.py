@@ -17,18 +17,18 @@ def test_smoke_expands_to_one_twenty_row_run():
     assert config.timeouts.query_s == 3600
 
 
-def test_m3_has_36_configurations_108_runs_in_requested_order():
+def test_m3_has_12_configurations_36_runs_in_requested_order():
     config = load_config(CONFIGS / "m3_sweep.yaml")
     runs = expand(config)
-    assert len(runs) == 108
-    assert len({(r.n_workers, r.policy, r.workload.name) for r in runs}) == 36
+    assert len(runs) == 36
+    assert len({(r.n_workers, r.policy, r.workload.name) for r in runs}) == 12
     assert [r.name for r in runs[:4]] == [
         "round_robin/fever/rep_1",
         "round_robin/fever/rep_2",
         "round_robin/fever/rep_3",
         "round_robin/medec/rep_1",
     ]
-    assert [r.n_workers for r in runs] == [2] * 36 + [3] * 36 + [4] * 36
+    assert [r.n_workers for r in runs] == [2] * 36
     assert [runs[i].policy for i in [0, 9, 18, 27]] == [
         "round_robin",
         "least_outstanding",
@@ -37,7 +37,7 @@ def test_m3_has_36_configurations_108_runs_in_requested_order():
     ]
     assert len(expand(config, 2)) == 36
     with pytest.raises(ValueError, match="not in configured"):
-        expand(config, 5)
+        expand(config, 3)
 
 
 @pytest.mark.parametrize(

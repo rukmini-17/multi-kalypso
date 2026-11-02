@@ -1,7 +1,7 @@
 model: Qwen/Qwen2.5-7B-Instruct
 hardware:
   gpu_type: A10
-n_workers: [2, 3, 4]
+n_workers: [2]
 policies: [round_robin, least_outstanding, cost_aware, row_affinity]
 workloads:
   - {name: fever, rows: 500}
