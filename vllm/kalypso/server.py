@@ -30,7 +30,7 @@ from vllm.kalypso.instrumentation import RequestRecorder, WorkerMetricsPoller
 from vllm.kalypso.query_processor import QueryProcessor
 from vllm.kalypso.results import format_results
 from vllm.kalypso.workers.http_executor import HttpVLLMExecutor
-from vllm.kalypso.workers.policy import make_policy
+from vllm.kalypso.workers.policy import RoundRobinPolicy, make_policy
 from vllm.kalypso.workers.pool import WorkerPool, load_config, parse_urls
 from vllm.kalypso.workers.router import CallRouter
 
@@ -100,20 +100,21 @@ def build_app(args) -> FastAPI:
 
         policy = make_policy(args.policy or (cfg.policy if cfg else None) or "round_robin")
         total_budget = pool.total_capacity()
+        def budget_fn(prompt, max_tokens):
+            manager = KVMemoryManager.get_instance()
+            return (manager.token_length(prompt) + max_tokens) * manager.bytes_per_token
+
+        router = CallRouter(
+            pool, RoundRobinPolicy() if policy.sticky else policy, budget_fn,
+        )
         if policy.sticky:
             # row_affinity: admit() places each row once; its later calls stay there.
-            qp_pool, qp_policy, executor = pool, policy, workers[0].executor
-            router = None
+            # Calls from rows never placed (blocking operators) go round robin.
+            qp_pool, qp_policy = pool, policy
         else:
             # Per-call routing: tasks are admitted against the pool total,
             # and each LLM call picks its own worker.
-            router = CallRouter(
-                pool, policy,
-                lambda prompt, max_tokens: (
-                    KVMemoryManager.get_instance().token_length(prompt) + max_tokens
-                ) * KVMemoryManager.get_instance().bytes_per_token,
-            )
-            qp_pool, qp_policy, executor = None, None, router
+            qp_pool, qp_policy = None, None
 
         qp = CoordinatorQueryProcessor(
             model_name=model_name,
@@ -123,8 +124,9 @@ def build_app(args) -> FastAPI:
             policy=qp_policy,
             poller=poller,
         )
-        qp.executor = executor
-        app.state.router = router
+        qp.executor = router
+        # Under row_affinity most calls bypass the router, so /workers reports the pool.
+        app.state.router = None if policy.sticky else router
         app.state.query_processor = qp
         app.state.pool = pool
         app.state.recorder = recorder

@@ -55,7 +55,7 @@ def test_success_and_unknown_policy_write_complete_result_rows(tmp_path, monkeyp
     body = post.call_args.args[1]
     assert Path(body["data_path"]) == out / "data/fever/input/input.csv"
     assert Path(body["data_path"]).is_absolute()
-    assert body["blocking"] is True
+    assert body["blocking"] is False
     assert len((out / "results.csv").read_text().splitlines()) == 5
     assert (
         json.loads((out / "round_robin/fever/rep_1/response.json").read_text())[

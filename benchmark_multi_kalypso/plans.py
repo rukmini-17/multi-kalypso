@@ -84,7 +84,7 @@ WORKLOADS = {
             ),
             Agg("Summarize the most common reasons claims were refuted."),
         ],
-        blocking=True,
+        blocking=False,
     ),
     "medec": Workload(
         data_root=SAMPLE_DATA,

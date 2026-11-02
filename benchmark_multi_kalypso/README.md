@@ -106,7 +106,7 @@ The M3 sweep defaults `kv_cache_metrics_sample` to null to avoid sampling overhe
 Raise it to a fraction up to 1.0 for separate eviction analysis; sampling every block can perturb timing.
 Workload requests never add ignored `max_tokens` arguments, and request table paths are absolute.
 MEDEC and ContractNLI prompts use upstream `scenarios.py` constants.
-FEVER uses blocking execution because aggregation input order differs when pipelined.
+All three workloads run pipelined; only SemAgg waits for all its input.
 Full MEDEC/ContractNLI datasets and teammate policy `cost_aware` are pending inputs.
 The skip-inference correctness test belongs to the separate CPU CI branch and is outside this package.
 

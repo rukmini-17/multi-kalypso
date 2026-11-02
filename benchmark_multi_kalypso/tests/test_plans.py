@@ -3,7 +3,7 @@ import pytest
 from benchmark_multi_kalypso import plans
 
 
-def test_fever_wire_body_is_blocking_filter_map_agg(tmp_path):
+def test_fever_wire_body_is_pipelined_filter_map_agg(tmp_path):
     workload = plans.WORKLOADS["fever"]
     body = plans.to_request(workload, tmp_path / "input.csv", {}, "small-model")
     assert body == {
@@ -36,7 +36,7 @@ def test_fever_wire_body_is_blocking_filter_map_agg(tmp_path):
             },
         ],
         "data_path": str(tmp_path / "input.csv"),
-        "blocking": True,
+        "blocking": False,
         "model_name": "small-model",
     }
 
@@ -51,7 +51,7 @@ def test_fever_wire_body_is_blocking_filter_map_agg(tmp_path):
                 ("sem_map", {"prompt"}),
                 ("sem_agg", {"instruction"}),
             ],
-            True,
+            False,
         ),
         (
             "medec",

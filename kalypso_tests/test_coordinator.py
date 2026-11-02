@@ -36,6 +36,48 @@ def test_coordinator_requires_virtual_pinning(monkeypatch):
     assert loaded == []
 
 
+def test_row_affinity_default_executor_alternates_workers(monkeypatch):
+    calls = []
+
+    workers = [
+        NS(name=name, url=f"http://{name}", model="qwen", model_path="qwen",
+           executor=NS(execute=AsyncMock(
+               side_effect=lambda _name=name, **kw: calls.append(_name),
+           ), close=AsyncMock()))
+        for name in ("w0", "w1")
+    ]
+    pool = NS(workers=workers, total_capacity=lambda: 200,
+              manager=lambda worker: NS(capacity=lambda: 100))
+    monkeypatch.setattr(server.WorkerPool, "discover", AsyncMock(return_value=pool))
+    monkeypatch.setattr(query_processor.KVMemoryManager, "init", lambda *args: None)
+    monkeypatch.setattr(
+        query_processor.KVMemoryManager, "get_instance",
+        lambda: NS(token_length=len, bytes_per_token=2),
+    )
+    monkeypatch.setattr(query_processor, "VLLMExecutor", lambda model: object())
+    monkeypatch.setattr(server, "WorkerMetricsPoller", lambda *args, **kw: NS(
+        poll_once=AsyncMock(), start=lambda: None, stop=AsyncMock(),
+    ))
+
+    async def go():
+        app = server.build_app(NS(
+            config=None, workers="http://w0,http://w1", policy="row_affinity",
+            record_path=None, poll_interval=0.5,
+        ))
+        async with app.router.lifespan_context(app):
+            processor = app.state.query_processor
+            assert processor.pool is pool
+            assert processor.policy.sticky
+            for _ in range(4):
+                await processor.executor.execute(raw_request=None, prompt="p", max_tokens=8)
+                assert processor.policy.next == 0
+            assert calls == ["w0", "w1", "w0", "w1"]
+            assert app.state.router is None
+            assert processor.executor.budget_fn("p", 8) == 18
+
+    asyncio.run(go())
+
+
 def test_both_query_routes_keep_the_same_result_shape():
     from vllm.entrypoints.openai import api_server
 
