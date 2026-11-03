@@ -1,8 +1,9 @@
 # execution/determinism.py
 """Seeded reply replacement for the multi-worker correctness harness.
 
-When KALYPSO_COIN_FLIP_SEED is set, each LLM reply is replaced after real
-inference by a hash of the seed and prompt, shaped by the operator's strategy.
+When KALYPSO_COIN_FLIP_SEED is set, each LLM reply is replaced by a hash of the
+seed and prompt, shaped by the operator's strategy. KALYPSO_SKIP_INFERENCE=1
+also bypasses inference for non-pin calls.
 """
 
 import hashlib
@@ -16,6 +17,14 @@ from .executor import CompletionResult
 def determinism_seed() -> str | None:
     """Return the harness seed, or None when determinism is off."""
     return os.environ.get("KALYPSO_COIN_FLIP_SEED") or None
+
+
+def skip_inference() -> bool:
+    if os.environ.get("KALYPSO_SKIP_INFERENCE") != "1":
+        return False
+    if determinism_seed() is None:
+        raise RuntimeError("KALYPSO_SKIP_INFERENCE=1 requires KALYPSO_COIN_FLIP_SEED")
+    return True
 
 
 class Determinism(ABC):
@@ -72,7 +81,7 @@ def apply_determinism(
     result: CompletionResult,
     determinism: Determinism | None,
 ) -> CompletionResult:
-    """Make harness replies reproducible across worker counts after real inference."""
+    """Make harness replies reproducible across worker counts."""
     seed = determinism_seed()
     if seed is None:
         return result
